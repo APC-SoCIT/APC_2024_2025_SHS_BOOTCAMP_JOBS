@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\smile\OneDrive - Asia Pacific College\Documents\GitHub\APC_2024_2025_SHS_BOOTCAMP_JOBS\kivy_venv"
+VIRTUAL_ENV="D:\APC_2024_2025_SHS_BOOTCAMP_JOBS\kivy_venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
