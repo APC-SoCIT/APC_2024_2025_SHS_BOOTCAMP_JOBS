@@ -1,0 +1,101 @@
+<JobScreen1>:
+
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+
+                
+        Spinner:
+            id: spinner_id
+            text: "Filter"
+            values: ["Location", "Salary", "Time"]
+            size_hint: (None, None)
+            size: dp(120), dp(40)
+            pos_hint: {"center_y": 0.5}
+            on_text: root.spinner_clicked(spinner_id.text)
+
+        Label:
+            text: ''
+            size_hint_y: 0.2
+            
+        GridLayout:
+            cols: 2
+            size_hint_y: 0.7
+            spacing: dp(15)
+            padding: dp(20)
+
+            MDCard:
+                style: "outlined"
+                orientation: "vertical"
+                padding: dp(10)
+
+                Label:
+                    id: label1
+                    text: "left"
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.size
+
+            MDCard:
+                style: "outlined"
+                orientation: "vertical"
+                padding: dp(10)
+
+                Label:
+                    id: label2
+                    text: "right"
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.size
+
+            MDCard:
+                style: "outlined"
+                orientation: "vertical"
+                padding: dp(10)
+
+                Label:
+                    id: label1
+                    text: "left"
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.size
+
+            MDCard:
+                style: "outlined"
+                orientation: "vertical"
+                padding: dp(10)
+
+                Label:
+                    id: label2
+                    text: "right"
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.size
+        
+        MDNavigationBar:
+            panel_color: "#222222"
+            selected_color_background: "#4CAF50"
+            text_color_active: "#FFFFFF"
+            text_color_disabled: "#AAAAAA"
+            size_hint_y: None
+            height: dp(64)
+
+            MDNavigationItem:
+                icon: "home"
+                text: "Home"
+                on_release: print("Home clicked")
+
+            MDNavigationItem:
+                icon: "magnify"
+                text: "Search"
+                on_release: print("Search clicked")
+
+            MDNavigationItem:
+                icon: "account"
+                text: "Profile"
+                on_release: print("Profile clicked")
+
+
+
+
+    
