@@ -1,0 +1,27 @@
+#: import utils kivy.utils
+
+<MyGridLayout>
+
+    GridLayout:
+        cols:1
+        size: root.width, root.height
+
+        Button:
+            text: "Submit"
+            font_size: 32
+            on_press: root.press()
+            #RGB - A
+            background_normal: ''
+            background_color: (0,1,0,1)
+
+            background_color: utils.get_color_from_hex('DD3846')
+
+        Button:
+            text: "Submit"
+            font_size: 32
+            on_press: root.press()
+            #RGB - A
+            background_normal: ''
+            background_color: (0,1,0,1)
+
+            background_color: utils.get_color_from_hex('DD3846')
