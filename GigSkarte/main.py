@@ -96,7 +96,7 @@ class AuthApp(App):
         return sm
 
 
-class JobDetailsScreen(BoxLayout):
+class JobDetailScreen(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(orientation='vertical', padding=10, spacing=10, **kwargs)
 
