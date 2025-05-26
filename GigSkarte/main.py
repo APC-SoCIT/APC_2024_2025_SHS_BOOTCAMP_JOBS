@@ -5,6 +5,8 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.uix.popup import Popup
+
 
 
 class SignUpScreen(Screen):
@@ -94,5 +96,47 @@ class AuthApp(App):
         return sm
 
 
+class JobDetailsScreen(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(orientation='vertical', padding=10, spacing=10, **kwargs)
+
+        header = BoxLayout(size_hint_y=0.1)
+        back_button = Button(text="<")  
+        header.add_widget(back_button)
+        header.add_widget(Label(text="Employer's Name"))
+        self.add_widget(header)
+
+        self.add_widget(Label(text="Job: House Cleaning"))
+        self.add_widget(Label(text="Location: Makati City"))
+        self.add_widget(Label(text="Date & Time: May 25, 2025 - 9:00 AM"))
+        self.add_widget(Label(text="Salary: ₱1,500"))
+
+        accept_button = Button(
+            text="Accept job offer",
+            background_color=(1, 0, 0, 1),  
+            size_hint_y=0.2
+        )
+        accept_button.bind(on_press=self.accept_job)
+        self.add_widget(accept_button)
+
+    def accept_job(self, instance):
+        popup = Popup(
+            title='Job Accepted',
+            content=Label(text='You have accepted the job offer.'),
+            size_hint=(0.6, 0.4)
+        )
+        popup.open()
+
+
+class JobApp(App):
+    def build(self):
+        return JobDetailsScreen()
+
+if __name__ == '__main__':
+    JobApp().run()
+
+
+
 if __name__ == '__main__':
     AuthApp().run()
+
