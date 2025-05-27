@@ -1,0 +1,32 @@
+<SelectScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: "20dp"
+        spacing: "20dp"
+        pos_hint: {"center_x": .5, "center_y": .5}
+
+        MDLabel:
+            text: "Choose Your Role"
+            halign: "center"
+            font_style: "H5"
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: "20dp"
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: "20dp"
+            size_hint_y: None
+            height: "200dp"
+
+            MDFlatButton:
+                text: "Become Worker"
+                size_hint_x: 0.8
+                pos_hint: {"center_x": .5}
+                on_release: root.on_worker_press()
+
+            MDFlatButton:
+                text: "Become Employer"
+                size_hint_x: 0.8
+                pos_hint: {"center_x": .5}
+                on_release: root.on_employer_press()

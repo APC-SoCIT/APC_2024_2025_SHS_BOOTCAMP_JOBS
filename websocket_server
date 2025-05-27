@@ -1,0 +1,32 @@
+import asyncio
+import websockets
+
+connected = set()
+
+async def chat(websocket):
+    print("Client connected.")
+    connected.add(websocket)
+    try:
+        async for message in websocket:
+            print(f"Received: {message}")
+            for conn in connected:
+                if conn != websocket:
+                    await conn.send(message)
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        print("Client disconnected.")
+        connected.remove(websocket)
+
+async def main():
+    async with websockets.serve(chat, "localhost", 8765):
+        print("WebSocket server started. Press Ctrl+C to stop.")
+        try:
+            await asyncio.Future()  # run forever
+        except asyncio.CancelledError:
+            print("Shutting down server...")
+
+try:
+    asyncio.run(main())
+except KeyboardInterrupt:
+    print("Server stopped by user.")
