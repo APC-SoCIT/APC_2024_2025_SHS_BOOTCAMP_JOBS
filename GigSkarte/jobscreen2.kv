@@ -1,0 +1,80 @@
+ScreenManager:
+    JobScreen2:
+        name: "job_screen"
+    AddJobScreen:
+        name: "add_screen"
+
+<JobScreen2>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: dp(10)
+        spacing: dp(10)
+
+        Label:
+            text: 'Your listed jobs'
+            size_hint_y: 0.2
+
+        GridLayout:
+            id: job_grid
+            cols: 2
+            spacing: dp(15)
+            padding: dp(20)
+            size_hint: 1, 1
+            row_default_height: dp(120)
+            row_force_default: True
+            col_default_width: self.width / 2 - dp(20)
+            col_force_default: True
+
+        MDFabButton:
+            style: "large"
+            icon: "plus"
+            md_bg_color: "green"
+            pos_hint: {"right": 0.95, "y": 0.05}
+            on_release:
+                app.root.current = "add_screen"
+
+        MDNavigationBar:
+            panel_color: "#222222"
+            selected_color_background: "#4CAF50"
+            text_color_active: "#FFFFFF"
+            text_color_disabled: "#AAAAAA"
+            size_hint_y: None
+            height: dp(64)
+            pos_hint: {"center_x": 0.5, "y": 0}
+
+            MDNavigationItem:
+                icon: "home"
+                text: "Home"
+                on_release: print("Home clicked")
+
+            MDNavigationItem:
+                icon: "account"
+                text: "Profile"
+                on_release: print("Profile clicked")
+
+<AddJobScreen>:
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: dp(20)
+        spacing: dp(20)
+
+        MDTextField:
+            id: input_location
+            hint_text: "Enter job Location"
+            multiline: False
+
+        MDTextField:
+            id: input_time
+            hint_text: "Enter job Time"
+            multiline: False
+
+        MDTextField:
+            id: input_salary
+            hint_text: "Enter job salary"
+            multiline: False
+
+        MDButton:
+            pos_hint: {"center_x": 0.5}
+            text: "Add Card"
+            on_release:
+                root.submit_text()
