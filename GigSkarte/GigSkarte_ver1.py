@@ -8,6 +8,14 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 
 
+# --- Database ---
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
+
 # --- Auth screens ---
 
 class SignUpScreen(Screen):
