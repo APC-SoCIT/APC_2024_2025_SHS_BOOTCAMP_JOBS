@@ -357,6 +357,25 @@ ScreenManager:
             pos_hint: {"right": 0.95, "y": 0.05}
             on_release:
                 app.root.current = "editable_screen"
+        
+        MDNavigationBar:
+            panel_color: "#222222"
+            selected_color_background: "#4CAF50"
+            text_color_active: "#FFFFFF"
+            text_color_disabled: "#AAAAAA"
+            size_hint_y: None
+            height: dp(64)
+            pos_hint: {"center_x": 0.5, "y": 0}
+
+            MDNavigationItem:
+                icon: "home"
+                text: "Home"
+                on_release: print("Home clicked")
+
+            MDNavigationItem:
+                icon: "account"
+                text: "Profile"
+                on_release: print("Profile clicked")
 
 
 <EditableJobScreen>:
