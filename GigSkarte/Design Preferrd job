@@ -43,7 +43,7 @@ class InterestsScreen(Screen):
 
         main_layout = BoxLayout(orientation='vertical', padding=20, spacing=10)
         with main_layout.canvas.before:
-            Color(1, 1, 1, 1)  # white background
+            Color(1, 1, 1, 1)  
             self.bg_rect = RoundedRectangle(size=self.size, pos=self.pos)
         main_layout.bind(size=self._update_rect, pos=self._update_rect)
 
