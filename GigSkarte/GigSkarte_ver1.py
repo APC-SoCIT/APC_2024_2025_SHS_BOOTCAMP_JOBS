@@ -73,19 +73,76 @@ class InterestsScreen(Screen):
 
 
 
-# --- Worker Job Screen (no add job button) ---
+# --- Worker Job Screen ---
 
 class JobScreen1(Screen):
-    def spinner_clicked(self, value):
-        self.ids.spinner_id.text = f'{value}'
+    def on_enter(self):
 
-    def show_job_details(self):
-        self.manager.current = 'job_details'
+        self.load_jobs_from_db()
+
+    def load_jobs_from_db(self):
+        
+        self.ids.job_grid_1.clear_widgets()
+
+        try:
+            jobs_ref = db.collection('jobs')
+            jobs = jobs_ref.stream()
+
+            for job in jobs:
+                job_data = job.to_dict()
+                title = job_data.get('title', 'No title')
+                location = job_data.get('location', 'No location')
+                time = job_data.get('time', 'No time')
+                salary = job_data.get('salary', 'No salary')
+
+                text = f"{title}\nLocation: {location}\nTime: {time}\nSalary: {salary}"
+
+                card = MDCard(
+                    style="outlined",
+                    orientation="vertical",
+                    padding=dp(10),
+                    size_hint=(None, None),
+                    size=(self.ids.job_grid_1.width / 2 - dp(15), dp(100)),
+                    ripple_behavior=True,
+                )
+                card.add_widget(MDLabel(
+                    text=text,
+                    halign="center",
+                    valign="middle",
+                    text_size=(card.width - dp(20), None)
+                ))
+
+
+                def on_card_touch(instance, touch, job_data=job_data):
+                    if instance.collide_point(*touch.pos):
+                        details_screen = self.manager.get_screen('job_details')
+                        details_screen.job_data = job_data 
+                        self.manager.current = 'job_details'
+
+                card.bind(on_touch_down=on_card_touch)
+
+                self.ids.job_grid_1.add_widget(card)
+
+        except Exception as e:
+            popup = Popup(
+                title='Database Error',
+                content=Label(text=f'Failed to load jobs: {e}'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
 
 
 # --- Job Details Screen (for worker) ---
 
 class JobDetailsScreen(Screen):
+    job_data = {}
+
+    def on_pre_enter(self):
+        self.ids.job_title.text = f"Job: {self.job_data.get('title', '')}"
+        self.ids.job_location.text = f"Location: {self.job_data.get('location', '')}"
+        self.ids.job_time.text = f"Date & Time: {self.job_data.get('time', '')}"
+        self.ids.job_salary.text = f"Salary: ₱{self.job_data.get('salary', '')}"
+
     def accept_job(self):
         popup = Popup(
             title='Job Accepted',
@@ -127,6 +184,24 @@ class EditableJobScreen(Screen):
         salary = self.ids.edit_salary.text.strip()
 
         if title and location and time and salary:
+            job_data = {
+                "title": title,
+                "location": location,
+                "time": time,
+                "salary": salary,
+            }
+
+            try:
+                db.collection('jobs').add(job_data)
+            except Exception as e:
+                popup = Popup(
+                    title='Database Error',
+                    content=Label(text=f'Failed to save job: {e}'),
+                    size_hint=(0.6, 0.4)
+                )
+                popup.open()
+                return
+
             job_screen = self.manager.get_screen('job_screen')
             job_screen.add_card(title, location, time, salary)
 
