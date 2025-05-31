@@ -237,11 +237,13 @@ ScreenManager:
 
 <JobScreen1>:
     BoxLayout:
-        orientation: "vertical"
-
-        Label:
-            text: 'Available Jobs (Worker)'
-            size_hint_y: 0.2
+        orientation: 'vertical'
+        
+        MDLabel:
+            text: "Available Jobs"
+            halign: "center"
+            size_hint_y: None
+            height: dp(40)
 
         Spinner:
             id: spinner_id
@@ -249,62 +251,17 @@ ScreenManager:
             values: ["Location", "Salary", "Time"]
             size_hint: (None, None)
             size: dp(120), dp(40)
-            pos_hint: {"center_y": 0.5}
+            pos_hint: {"center_x": 0.5}
             on_text: root.spinner_clicked(spinner_id.text)
 
-        GridLayout:
-            cols: 2
-            size_hint_y: 0.7
-            spacing: dp(15)
-            padding: dp(20)
-
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
+        ScrollView:
+            GridLayout:
+                id: job_grid_1
+                cols: 2
+                spacing: dp(10)
                 padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
-                MDLabel:
-                    text: "Job 1 - Click me"
-                    halign: "center"
-                    valign: "middle"
-                    text_size: self.size
-
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
-                padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
-                MDLabel:
-                    text: "Job 2 - Click me"
-                    halign: "center"
-                    valign: "middle"
-                    text_size: self.size
-
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
-                padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
-                MDLabel:
-                    text: "Job 3 - Click me"
-                    halign: "center"
-                    valign: "middle"
-                    text_size: self.size
-
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
-                padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
-                MDLabel:
-                    text: "Job 4 - Click me"
-                    halign: "center"
-                    valign: "middle"
-                    text_size: self.size
+                size_hint_y: None
+                height: self.minimum_height
 
         MDNavigationBar:
             panel_color: "#222222"
@@ -345,19 +302,23 @@ ScreenManager:
                     root.manager.current = "job_screen_1"
 
             Label:
-                text: "Employer's Name"
+                text: "Employer's Name"  # Optional: make dynamic later if needed
 
         Label:
-            text: "Job: House Cleaning"
+            id: job_title
+            text: "Job: "
 
         Label:
-            text: "Location: Makati City"
+            id: job_location
+            text: "Location: "
 
         Label:
-            text: "Date & Time: May 25, 2025 - 9:00 AM"
+            id: job_time
+            text: "Date & Time: "
 
         Label:
-            text: "Salary: ₱1,500"
+            id: job_salary
+            text: "Salary: "
 
         Button:
             text: "Accept job offer"
@@ -384,13 +345,32 @@ ScreenManager:
             spacing: dp(10)
             size_hint_y: 0.8
 
-        MDFlatButton:
+        MDFabButton:
             style: "large"
             icon: "plus"
             md_bg_color: "green"
             pos_hint: {"right": 0.95, "y": 0.05}
             on_release:
                 app.root.current = "editable_screen"
+        
+        MDNavigationBar:
+            panel_color: "#222222"
+            selected_color_background: "#4CAF50"
+            text_color_active: "#FFFFFF"
+            text_color_disabled: "#AAAAAA"
+            size_hint_y: None
+            height: dp(64)
+            pos_hint: {"center_x": 0.5, "y": 0}
+
+            MDNavigationItem:
+                icon: "home"
+                text: "Home"
+                on_release: print("Home clicked")
+
+            MDNavigationItem:
+                icon: "account"
+                text: "Profile"
+                on_release: print("Profile clicked")
 
 
 <EditableJobScreen>:
@@ -403,33 +383,48 @@ ScreenManager:
             id: edit_title
             hint_text: "Job Title"
             required: True
+            helper_text: "Enter the job position/title"
+            helper_text_mode: "on_focus"
 
         MDTextField:
             id: edit_location
             hint_text: "Location"
             required: True
+            helper_text: "Enter the job location"
+            helper_text_mode: "on_focus"
 
         MDTextField:
             id: edit_time
             hint_text: "Date & Time"
             required: True
+            helper_text: "e.g. Monday 9am–5pm"
+            helper_text_mode: "on_focus"
 
         MDTextField:
             id: edit_salary
             hint_text: "Salary"
             required: True
+            helper_text: "Enter the compensation (e.g. ₱500/day)"
+            helper_text_mode: "on_focus"
 
-        Button:
-            text: "Save Job"
+        MDButton:
+            style: "filled"
+            pos_hint: {"center_x": 0.5}
             size_hint_y: None
             height: dp(48)
             on_release:
                 root.save_details()
+            MDButtonText:
+                text: "Save Job"
 
-        Button:
-            text: "Back"
+        MDButton:
+            style: "outlined"
+            pos_hint: {"center_x": 0.5}
             size_hint_y: None
             height: dp(48)
             on_release:
                 app.root.current = "job_screen"
+            MDButtonText:
+                text: "Back"
+
 
