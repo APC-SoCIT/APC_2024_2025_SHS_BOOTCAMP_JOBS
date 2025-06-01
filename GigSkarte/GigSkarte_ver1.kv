@@ -236,23 +236,19 @@ ScreenManager:
 
 
 <JobScreen1>:
-    BoxLayout:
+    md_bg_color: "#EEEAE2"
+
+    MDBoxLayout:
         orientation: 'vertical'
-        
+        md_bg_color: "#EEEAE2"
+
         MDLabel:
             text: "Available Jobs"
             halign: "center"
             size_hint_y: None
             height: dp(40)
-
-        Spinner:
-            id: spinner_id
-            text: "Filter"
-            values: ["Location", "Salary", "Time"]
-            size_hint: (None, None)
-            size: dp(120), dp(40)
-            pos_hint: {"center_x": 0.5}
-            on_text: root.spinner_clicked(spinner_id.text)
+            theme_text_color: "Custom"
+            text_color: "#000000"
 
         ScrollView:
             GridLayout:
@@ -265,9 +261,9 @@ ScreenManager:
 
         MDNavigationBar:
             panel_color: "#222222"
-            selected_color_background: "#4CAF50"
-            text_color_active: "#FFFFFF"
-            text_color_disabled: "#AAAAAA"
+            selected_color_background: "#DD3846"
+            text_color_active: "#000000"
+            text_color_disabled: "#EEEAE2"
             size_hint_y: None
             height: dp(64)
 
