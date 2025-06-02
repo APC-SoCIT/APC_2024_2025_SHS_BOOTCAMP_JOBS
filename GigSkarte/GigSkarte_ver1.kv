@@ -534,23 +534,62 @@ ScreenManager:
             on_release: root.show_job_details()
 
 <JobDetailsScreen>:
-    BoxLayout:
-        orientation: "vertical"
-        padding: 20
-        spacing: 20
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        md_bg_color: "#EEEAE2"
 
-        Label:
-            text: "Job Details Here..."
+        MDBoxLayout:
+            size_hint_y: 0.1
 
-        Button:
-            text: "Accept Job"
-            on_release: root.accept_job()
+            MDButton:
+                text: "<"
+                md_bg_color: "#DD3846"
+                text_color: "white"
+                on_release:
+                    root.manager.current = "job_screen_1"
+
+            MDLabel:
+                text: "Employer's Name"
+                theme_text_color: "Custom"
+                text_color: "#DD3846"
+
+        MDLabel:
+            id: job_title
+            text: "Job: "
+            theme_text_color: "Custom"
+            text_color: "#DD3846"
+
+        MDLabel:
+            id: job_location
+            text: "Location: "
+            theme_text_color: "Custom"
+            text_color: "#DD3846"
+
+        MDLabel:
+            id: job_time
+            text: "Date & Time: "
+            theme_text_color: "Custom"
+            text_color: "#DD3846"
+
+        MDLabel:
+            id: job_salary
+            text: "Salary: "
+            theme_text_color: "Custom"
+            text_color: "#DD3846"
+
+        MDButton:
+            text: "Accept job offer"
+            md_bg_color: "#DD3846"
+            text_color: "white"
+            size_hint_y: 0.2
+            on_release:
+                root.accept_job()
 
 <JobScreen2>:
     MDBoxLayout:
         orientation: "vertical"
-        padding: dp(20)
-        spacing: dp(10)
         md_bg_color: "#EEEAE2"
 
         MDTopAppBar:
@@ -569,6 +608,9 @@ ScreenManager:
             text: "Your Job Listings"
             size_hint_y: 0.1
             font_size: 24
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: "#000000"
 
         GridLayout:
             id: job_grid
@@ -580,14 +622,15 @@ ScreenManager:
         MDFabButton:
             style: "large"
             icon: "plus"
-            md_bg_color: "green"
+            theme_icon_color: "Custom"
+            icon_color: "#EEEAE2"
+            theme_bg_color: "Custom"
+            md_bg_color: "#DD3846"
             pos_hint: {"right": 0.95, "y": 0.05}
             on_release:
                 app.root.current = "editable_screen"
         
         MDNavigationBar:
-            panel_color: "#222222"
-            selected_color_background: "#4CAF50"
             text_color_active: "#FFFFFF"
             text_color_disabled: "#AAAAAA"
             size_hint_y: None
@@ -603,6 +646,11 @@ ScreenManager:
                 icon: "account"
                 text: "Profile"
                 on_release: print("Profile clicked")
+
+            MDNavigationItem:
+                icon: "clock"
+                text: "Pending"
+                on_release: print("Pending clicked")
 
 
 <EditableJobScreen>:
