@@ -610,6 +610,7 @@ ScreenManager:
         orientation: "vertical"
         padding: 20
         spacing: 15
+        md_bg_color: "#EEEAE2"
 
         Label:
             text: "Job Title:"
@@ -619,6 +620,7 @@ ScreenManager:
             required: True
             helper_text: "Enter the job position/title"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDTextField:
             id: edit_location
@@ -626,6 +628,7 @@ ScreenManager:
             required: True
             helper_text: "Enter the job location"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDTextField:
             id: edit_time
@@ -633,6 +636,7 @@ ScreenManager:
             required: True
             helper_text: "e.g. Monday 9am–5pm"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDTextField:
             id: edit_salary
@@ -640,9 +644,12 @@ ScreenManager:
             required: True
             helper_text: "Enter the compensation (e.g. ₱500/day)"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDButton:
             style: "filled"
+            theme_bg_color: "Custom"
+            md_bg_color: "#DD3846"
             pos_hint: {"center_x": 0.5}
             size_hint_y: None
             height: dp(48)
@@ -650,6 +657,9 @@ ScreenManager:
                 root.save_details()
             MDButtonText:
                 text: "Save Job"
+                theme_text_color: "Custom"
+                text_color: "#EEEAE2
+
 
         MDButton:
             style: "outlined"
