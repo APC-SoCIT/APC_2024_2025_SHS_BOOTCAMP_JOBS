@@ -242,6 +242,18 @@ ScreenManager:
         orientation: 'vertical'
         md_bg_color: "#EEEAE2"
 
+        MDTopAppBar:
+            type: "small"
+
+            MDTopAppBarLeadingButtonContainer:
+
+                MDActionTopAppBarButton:
+                    icon: "menu"
+
+            MDTopAppBarTitle:
+                text: "GigSkarte"
+                halign: "center"
+
         MDLabel:
             text: "Available Jobs"
             halign: "center"
@@ -327,9 +339,19 @@ ScreenManager:
 <JobScreen2>:
     MDBoxLayout:
         orientation: "vertical"
-        padding: dp(20)
-        spacing: dp(10)
         md_bg_color: "#EEEAE2"
+
+        MDTopAppBar:
+            type: "small"
+
+            MDTopAppBarLeadingButtonContainer:
+
+                MDActionTopAppBarButton:
+                    icon: "menu"
+
+            MDTopAppBarTitle:
+                text: "GigSkarte"
+                halign: "center"
 
         MDLabel:
             text: "Your Job Listings"
@@ -343,6 +365,7 @@ ScreenManager:
             id: job_grid
             cols: 2
             spacing: dp(10)
+            padding: dp(15)
             size_hint_y: 0.8
 
         MDFabButton:
