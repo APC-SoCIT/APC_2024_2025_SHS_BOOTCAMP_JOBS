@@ -493,70 +493,28 @@ ScreenManager:
 
 <JobScreen1>:
     BoxLayout:
-        orientation: "vertical"
-<<<<<<< Updated upstream
+        orientation: 'vertical'
+        
+        MDLabel:
+            text: "Available Jobs"
+            halign: "center"
+            size_hint_y: None
+            height: dp(40)
 
-        Label:
-            text: "Employer's Job Listings"
-            size_hint_y: 0.1
-            font_size: 24
-            
         Spinner:
             id: spinner_id
             text: "Filter"
             values: ["Location", "Salary", "Time"]
             size_hint: (None, None)
             size: dp(120), dp(40)
-            pos_hint: {"center_y": 0.5}
+            pos_hint: {"center_x": 0.5}
             on_text: root.spinner_clicked(spinner_id.text)
-    
-        GridLayout:
-            id: job_grid_1
-            cols: 1
-            size_hint_y: None
-            height: self.minimum_height
-            spacing: dp(15)
-            padding: dp(20)
 
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
-                padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
-                MDLabel:
-                    text: "Job 1 - Click me"
-                    halign: "center"
-                    valign: "middle"
-                    text_size: self.size
-
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
-                padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
-                MDLabel:
-                    text: "Job 2 - Click me"
-                    halign: "center"
-                    valign: "middle"
-                    text_size: self.size
-
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
-                padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
-                MDLabel:
-                    text: "Job 3 - Click me"
-                    halign: "center"
-                    valign: "middle"
-                    text_size: self.size
-
-            MDCard:
-                style: "outlined"
-                orientation: "vertical"
+        ScrollView:
+            GridLayout:
+                id: job_grid_1
+                cols: 2
+                spacing: dp(10)
                 padding: dp(10)
                 on_touch_down:
                     if self.collide_point(*args[1].pos): root.show_job_details()
@@ -568,9 +526,9 @@ ScreenManager:
 
         MDNavigationBar:
             panel_color: "#222222"
-            selected_color_background: "#4CAF50"
-            text_color_active: "#FFFFFF"
-            text_color_disabled: "#AAAAAA"
+            selected_color_background: "#DD3846"
+            text_color_active: "#000000"
+            text_color_disabled: "#EEEAE2"
             size_hint_y: None
             height: dp(50)
         
@@ -619,34 +577,55 @@ ScreenManager:
             on_release: root.accept_job()
 
 <JobScreen2>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
+        padding: dp(20)
+        spacing: dp(10)
 
-        ScrollView:
-            GridLayout:
-<<<<<<< Updated upstream
-                id: job_grid_1
-=======
-                id: job_grid
->>>>>>> Stashed changes
-                cols: 2
-                spacing: dp(10)
-                padding: dp(10)
-                size_hint_y: None
-                height: self.minimum_height
+        Label:
+            text: "Employer's Job Listings"
+            size_hint_y: 0.1
+            font_size: 24
 
-        Button:
-            text: "Add Job"
-            size_hint_y: None
-            height: dp(50)
+        GridLayout:
+            id: job_grid
+            cols: 2
+            spacing: dp(10)
+            size_hint_y: 0.8
+
+        MDFabButton:
+            style: "large"
+            icon: "plus"
+            md_bg_color: "green"
+            pos_hint: {"right": 0.95, "y": 0.05}
             on_release:
-                root.manager.current = "editable_screen"
+                app.root.current = "editable_screen"
+        
+        MDNavigationBar:
+            panel_color: "#222222"
+            selected_color_background: "#4CAF50"
+            text_color_active: "#FFFFFF"
+            text_color_disabled: "#AAAAAA"
+            size_hint_y: None
+            height: dp(64)
+            pos_hint: {"center_x": 0.5, "y": 0}
+
+            MDNavigationItem:
+                icon: "home"
+                text: "Home"
+                on_release: print("Home clicked")
+
+            MDNavigationItem:
+                icon: "account"
+                text: "Profile"
+                on_release: print("Profile clicked")
+
 
 <EditableJobScreen>:
-    GridLayout:
-        cols: 2
+    BoxLayout:
+        orientation: "vertical"
         padding: 20
-        spacing: 10
+        spacing: 15
 
         Label:
             text: "Job Title:"
@@ -654,53 +633,53 @@ ScreenManager:
             id: edit_title
 <<<<<<< Updated upstream
             hint_text: "Job Title"
-            
-=======
-            multiline: False
->>>>>>> Stashed changes
+            required: True
+            helper_text: "Enter the job position/title"
+            helper_text_mode: "on_focus"
 
-        Label:
-            text: "Location:"
-        TextInput:
+        MDTextField:
             id: edit_location
 <<<<<<< Updated upstream
             hint_text: "Location"
-            
-=======
-            multiline: False
+            required: True
+            helper_text: "Enter the job location"
+            helper_text_mode: "on_focus"
 
->>>>>>> Stashed changes
-        Label:
-            text: "Time:"
-        TextInput:
+        MDTextField:
             id: edit_time
 <<<<<<< Updated upstream
             hint_text: "Date & Time"
-            
-=======
-            multiline: False
+            required: True
+            helper_text: "e.g. Monday 9am–5pm"
+            helper_text_mode: "on_focus"
 
->>>>>>> Stashed changes
-        Label:
-            text: "Salary:"
-        TextInput:
+        MDTextField:
             id: edit_salary
 <<<<<<< Updated upstream
             hint_text: "Salary"
-            
-=======
-            multiline: False
->>>>>>> Stashed changes
+            required: True
+            helper_text: "Enter the compensation (e.g. ₱500/day)"
+            helper_text_mode: "on_focus"
 
-        Button:
-            text: "Save"
-            on_release: root.save_details()
+        MDButton:
+            style: "filled"
+            pos_hint: {"center_x": 0.5}
+            size_hint_y: None
+            height: dp(48)
+            on_release:
+                root.save_details()
+            MDButtonText:
+                text: "Save Job"
 
-        Button:
-            text: "Cancel"
+        MDButton:
+            style: "outlined"
+            pos_hint: {"center_x": 0.5}
+            size_hint_y: None
+            height: dp(48)
             on_release:
 <<<<<<< Updated upstream
                 app.root.current = "job_screen"
-=======
-                root.manager.current = "job_screen"
->>>>>>> Stashed changes
+            MDButtonText:
+                text: "Back"
+
+

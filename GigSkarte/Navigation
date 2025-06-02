@@ -1,0 +1,16 @@
+from kivymd.app import MDApp
+from kivy.lang.builder import Builder
+from kivy.core.window import Window
+from kivy.utils import get_color_from_hex
+Window.clearcolor = get_color_from_hex('#ffffff')
+Window.size = (450,600)
+
+class TopAppNavigation(MDApp):
+    def build(self):
+        kv = Builder.load_file('Navigation1.kv')
+        return kv
+app = TopAppNavigation()
+app.run()
+
+
+
