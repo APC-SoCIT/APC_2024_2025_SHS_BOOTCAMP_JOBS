@@ -30,6 +30,7 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
+<<<<<<< Updated upstream
     ScrollView:
         do_scroll_x: False
         do_scroll_y: True
@@ -40,6 +41,20 @@ ScreenManager:
             spacing: "20dp"
             size_hint_y: None
             height: self.minimum_height
+=======
+        Label:
+            text: "Email:"
+        TextInput:
+            id: email
+            multiline: False
+
+        Label:
+            text: "Phone:"
+        TextInput:
+            id: phone
+            multiline: False
+            input_filter: 'int'
+>>>>>>> Stashed changes
 
             MDLabel:
                 text: "[b]GigSkarte[/b]"
@@ -54,6 +69,7 @@ ScreenManager:
                 size_hint_y: None
                 height: self.texture_size[1]
 
+<<<<<<< Updated upstream
             MDTextField:
                 id: first_name
                 hint_text: "First Name*"
@@ -148,6 +164,41 @@ ScreenManager:
                     color: 0.87, 0.22, 0.27, 1
                     on_release:
                         app.root.current = "login"
+=======
+        Label:
+            text: "Birthdate:"
+        BoxLayout:
+            size_hint_y: None
+            height: dp(30)
+            spacing: dp(5)
+
+            Spinner:
+                id: birth_month
+                text: "Month"
+                values: [str(i) for i in range(1, 13)]
+                size_hint_x: 0.3
+
+            Spinner:
+                id: birth_day
+                text: "Day"
+                values: [str(i) for i in range(1, 32)]
+                size_hint_x: 0.3
+
+            Spinner:
+                id: birth_year
+                text: "Year"
+                values: [str(i) for i in range(1950, 2025)]
+                size_hint_x: 0.4
+
+        Button:
+            text: "Sign Up"
+            on_release: root.sign_up()
+
+        Button:
+            text: "Go to Login"
+            on_release:
+                root.manager.current = "login"
+>>>>>>> Stashed changes
 
 <LoginScreen>:
     name: "login"
@@ -158,6 +209,7 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
+<<<<<<< Updated upstream
     BoxLayout:
         orientation: "vertical"
         padding: "40dp"
@@ -227,10 +279,53 @@ ScreenManager:
                 color: 0.87, 0.22, 0.27, 1
                 on_release:
                     app.root.current = "signup"
+=======
+        Label:
+            text: "Phone:"
+        TextInput:
+            id: phone
+            multiline: False
+            input_filter: 'int'
+
+        Label:
+            text: "Birthdate:"
+        BoxLayout:
+            size_hint_y: None
+            height: dp(30)
+            spacing: dp(5)
+
+            Spinner:
+                id: birth_month
+                text: "Month"
+                values: [str(i) for i in range(1, 13)]
+                size_hint_x: 0.3
+
+            Spinner:
+                id: birth_day
+                text: "Day"
+                values: [str(i) for i in range(1, 32)]
+                size_hint_x: 0.3
+
+            Spinner:
+                id: birth_year
+                text: "Year"
+                values: [str(i) for i in range(1950, 2025)]
+                size_hint_x: 0.4
+
+        Button:
+            text: "Login"
+            on_release: root.login()
+
+        Button:
+            text: "Go to Sign Up"
+            on_release:
+                root.manager.current = "signup"
+>>>>>>> Stashed changes
 
 <SelectScreen>:
     BoxLayout:
         orientation: "vertical"
+<<<<<<< Updated upstream
         padding: "40dp", "80dp"
         spacing: "40dp"
         canvas.before:
@@ -239,35 +334,51 @@ ScreenManager:
             Rectangle:
                 pos: self.pos
                 size: self.size
+=======
+        padding: 40, 80
+        spacing: 30
+>>>>>>> Stashed changes
 
         Label:
             text: "Choose an Option"
             font_size: '28sp'
-            size_hint_y: 0.3
+            size_hint: 1, 0.3
             halign: 'center'
             valign: 'middle'
             text_size: self.size
+<<<<<<< Updated upstream
             color: 0.87, 0.22, 0.27, 1  # DD3846 accent color
+=======
+>>>>>>> Stashed changes
 
         Button:
             text: "Become a Worker"
-            size_hint_y: 0.3
+            size_hint: 1, 0.3
             font_size: '20sp'
             background_normal: ''
+<<<<<<< Updated upstream
             background_color: 0.87, 0.22, 0.27, 1  # DD3846
             color: 1, 1, 1, 1
+=======
+            background_color: 0.2, 0.6, 0.8, 1
+>>>>>>> Stashed changes
             on_release: root.on_worker()
 
         Button:
             text: "Become an Employer"
-            size_hint_y: 0.3
+            size_hint: 1, 0.3
             font_size: '20sp'
             background_normal: ''
+<<<<<<< Updated upstream
             background_color: 0.87, 0.22, 0.27, 1  # DD3846
             color: 1, 1, 1, 1
+=======
+            background_color: 0.1, 0.7, 0.3, 1
+>>>>>>> Stashed changes
             on_release: root.on_employer()
             
 
+<<<<<<< Updated upstream
 <InterestToggle@ToggleButton>:
     background_normal: ''
     background_down: ''
@@ -283,6 +394,8 @@ ScreenManager:
             size: self.size
             radius: [15]
 
+=======
+>>>>>>> Stashed changes
 <InterestsScreen>:
     BoxLayout:
         orientation: 'vertical'
@@ -373,11 +486,15 @@ ScreenManager:
             size: self.size
             pos: self.pos
             radius: [20]
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 <JobScreen1>:
     BoxLayout:
         orientation: "vertical"
+<<<<<<< Updated upstream
 
         Label:
             text: "Employer's Job Listings"
@@ -457,25 +574,30 @@ ScreenManager:
             size_hint_y: None
             height: dp(50)
         
+=======
+        padding: 10
+
+        Spinner:
+            id: spinner_id
+            text: "Select Job"
+            values: ["Cleaning", "Moving", "Laundry", "Pet Sitting", "Errands", "Babysitting"]
+            on_text: root.spinner_clicked(self.text)
+
+        Button:
+            text: "View Job Details"
+            size_hint_y: None
+            height: dp(50)
+            on_release: root.show_job_details()
+>>>>>>> Stashed changes
 
 <JobDetailsScreen>:
     BoxLayout:
-        orientation: 'vertical'
-        padding: 10
-        spacing: 10
-
-        BoxLayout:
-            size_hint_y: 0.1
-
-            Button:
-                text: "<"
-                on_press:
-                    root.manager.current = "job_screen_1"
-
-            Label:
-                text: "Employer's Name"
+        orientation: "vertical"
+        padding: 20
+        spacing: 20
 
         Label:
+<<<<<<< Updated upstream
             id: job_title
             text: "Job: House Cleaning"
 
@@ -488,6 +610,9 @@ ScreenManager:
 
         Label:
             text: "Salary: ₱1,500"
+=======
+            text: "Job Details Here..."
+>>>>>>> Stashed changes
 
         Button:
             text: "Accept Job"
@@ -499,7 +624,11 @@ ScreenManager:
 
         ScrollView:
             GridLayout:
+<<<<<<< Updated upstream
                 id: job_grid_1
+=======
+                id: job_grid
+>>>>>>> Stashed changes
                 cols: 2
                 spacing: dp(10)
                 padding: dp(10)
@@ -511,8 +640,7 @@ ScreenManager:
             size_hint_y: None
             height: dp(50)
             on_release:
-                app.root.current = "editable_screen"
-
+                root.manager.current = "editable_screen"
 
 <EditableJobScreen>:
     GridLayout:
@@ -524,38 +652,55 @@ ScreenManager:
             text: "Job Title:"
         TextInput:
             id: edit_title
+<<<<<<< Updated upstream
             hint_text: "Job Title"
             
+=======
+            multiline: False
+>>>>>>> Stashed changes
 
         Label:
             text: "Location:"
         TextInput:
             id: edit_location
+<<<<<<< Updated upstream
             hint_text: "Location"
             
+=======
+            multiline: False
+
+>>>>>>> Stashed changes
         Label:
             text: "Time:"
         TextInput:
             id: edit_time
+<<<<<<< Updated upstream
             hint_text: "Date & Time"
             
+=======
+            multiline: False
+
+>>>>>>> Stashed changes
         Label:
             text: "Salary:"
         TextInput:
             id: edit_salary
+<<<<<<< Updated upstream
             hint_text: "Salary"
             
+=======
+            multiline: False
+>>>>>>> Stashed changes
 
         Button:
-            text: "Save Job"
-            size_hint_y: None
-            height: dp(48)
-            on_release:
-                root.save_details()
+            text: "Save"
+            on_release: root.save_details()
 
         Button:
-            text: "Back"
-            size_hint_y: None
-            height: dp(48)
+            text: "Cancel"
             on_release:
+<<<<<<< Updated upstream
                 app.root.current = "job_screen"
+=======
+                root.manager.current = "job_screen"
+>>>>>>> Stashed changes
