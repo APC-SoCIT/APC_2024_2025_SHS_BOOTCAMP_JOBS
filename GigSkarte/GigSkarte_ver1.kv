@@ -325,15 +325,19 @@ ScreenManager:
 
 
 <JobScreen2>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
         padding: dp(20)
         spacing: dp(10)
+        md_bg_color: "#EEEAE2"
 
-        Label:
-            text: "Employer's Job Listings"
+        MDLabel:
+            text: "Your Job Listings"
             size_hint_y: 0.1
             font_size: 24
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: "#000000"
 
         GridLayout:
             id: job_grid
@@ -344,14 +348,15 @@ ScreenManager:
         MDFabButton:
             style: "large"
             icon: "plus"
-            md_bg_color: "green"
+            theme_icon_color: "Custom"
+            icon_color: "#EEEAE2"
+            theme_bg_color: "Custom"
+            md_bg_color: "#DD3846"
             pos_hint: {"right": 0.95, "y": 0.05}
             on_release:
                 app.root.current = "editable_screen"
-        
+
         MDNavigationBar:
-            panel_color: "#222222"
-            selected_color_background: "#4CAF50"
             text_color_active: "#FFFFFF"
             text_color_disabled: "#AAAAAA"
             size_hint_y: None
@@ -365,15 +370,20 @@ ScreenManager:
 
             MDNavigationItem:
                 icon: "account"
-                text: "Profile"
-                on_release: print("Profile clicked")
-
+                text: "Chat"
+                on_release: print("Chat clicked")
+                
+            MDNavigationItem:
+                icon: "clock"
+                text: "Pending"
+                on_release: print("Pending clicked")
 
 <EditableJobScreen>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
         padding: 20
         spacing: 15
+        md_bg_color: "#EEEAE2"
 
         MDTextField:
             id: edit_title
@@ -381,6 +391,7 @@ ScreenManager:
             required: True
             helper_text: "Enter the job position/title"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDTextField:
             id: edit_location
@@ -388,6 +399,7 @@ ScreenManager:
             required: True
             helper_text: "Enter the job location"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDTextField:
             id: edit_time
@@ -395,6 +407,7 @@ ScreenManager:
             required: True
             helper_text: "e.g. Monday 9am–5pm"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDTextField:
             id: edit_salary
@@ -402,9 +415,12 @@ ScreenManager:
             required: True
             helper_text: "Enter the compensation (e.g. ₱500/day)"
             helper_text_mode: "on_focus"
+            line_color_focus: "#000000"
 
         MDButton:
             style: "filled"
+            theme_bg_color: "Custom"
+            md_bg_color: "#DD3846"
             pos_hint: {"center_x": 0.5}
             size_hint_y: None
             height: dp(48)
@@ -412,6 +428,8 @@ ScreenManager:
                 root.save_details()
             MDButtonText:
                 text: "Save Job"
+                theme_text_color: "Custom"
+                text_color: "#EEEAE2"
 
         MDButton:
             style: "outlined"
@@ -422,5 +440,7 @@ ScreenManager:
                 app.root.current = "job_screen"
             MDButtonText:
                 text: "Back"
+                theme_text_color: "Custom"
+                text_color: "#DD3846"
 
 
