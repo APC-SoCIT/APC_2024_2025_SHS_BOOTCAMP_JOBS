@@ -30,7 +30,6 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-<<<<<<< Updated upstream
     ScrollView:
         do_scroll_x: False
         do_scroll_y: True
@@ -41,7 +40,6 @@ ScreenManager:
             spacing: "20dp"
             size_hint_y: None
             height: self.minimum_height
-=======
         Label:
             text: "Email:"
         TextInput:
@@ -54,7 +52,6 @@ ScreenManager:
             id: phone
             multiline: False
             input_filter: 'int'
->>>>>>> Stashed changes
 
             MDLabel:
                 text: "[b]GigSkarte[/b]"
@@ -69,7 +66,6 @@ ScreenManager:
                 size_hint_y: None
                 height: self.texture_size[1]
 
-<<<<<<< Updated upstream
             MDTextField:
                 id: first_name
                 hint_text: "First Name*"
@@ -164,7 +160,6 @@ ScreenManager:
                     color: 0.87, 0.22, 0.27, 1
                     on_release:
                         app.root.current = "login"
-=======
         Label:
             text: "Birthdate:"
         BoxLayout:
@@ -198,7 +193,6 @@ ScreenManager:
             text: "Go to Login"
             on_release:
                 root.manager.current = "login"
->>>>>>> Stashed changes
 
 <LoginScreen>:
     name: "login"
@@ -209,7 +203,6 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-<<<<<<< Updated upstream
     BoxLayout:
         orientation: "vertical"
         padding: "40dp"
@@ -279,7 +272,6 @@ ScreenManager:
                 color: 0.87, 0.22, 0.27, 1
                 on_release:
                     app.root.current = "signup"
-=======
         Label:
             text: "Phone:"
         TextInput:
@@ -320,12 +312,10 @@ ScreenManager:
             text: "Go to Sign Up"
             on_release:
                 root.manager.current = "signup"
->>>>>>> Stashed changes
 
 <SelectScreen>:
     BoxLayout:
         orientation: "vertical"
-<<<<<<< Updated upstream
         padding: "40dp", "80dp"
         spacing: "40dp"
         canvas.before:
@@ -334,10 +324,6 @@ ScreenManager:
             Rectangle:
                 pos: self.pos
                 size: self.size
-=======
-        padding: 40, 80
-        spacing: 30
->>>>>>> Stashed changes
 
         Label:
             text: "Choose an Option"
@@ -346,22 +332,16 @@ ScreenManager:
             halign: 'center'
             valign: 'middle'
             text_size: self.size
-<<<<<<< Updated upstream
             color: 0.87, 0.22, 0.27, 1  # DD3846 accent color
-=======
->>>>>>> Stashed changes
 
         Button:
             text: "Become a Worker"
             size_hint: 1, 0.3
             font_size: '20sp'
             background_normal: ''
-<<<<<<< Updated upstream
             background_color: 0.87, 0.22, 0.27, 1  # DD3846
             color: 1, 1, 1, 1
-=======
             background_color: 0.2, 0.6, 0.8, 1
->>>>>>> Stashed changes
             on_release: root.on_worker()
 
         Button:
@@ -369,16 +349,12 @@ ScreenManager:
             size_hint: 1, 0.3
             font_size: '20sp'
             background_normal: ''
-<<<<<<< Updated upstream
             background_color: 0.87, 0.22, 0.27, 1  # DD3846
             color: 1, 1, 1, 1
-=======
             background_color: 0.1, 0.7, 0.3, 1
->>>>>>> Stashed changes
             on_release: root.on_employer()
             
 
-<<<<<<< Updated upstream
 <InterestToggle@ToggleButton>:
     background_normal: ''
     background_down: ''
@@ -394,8 +370,6 @@ ScreenManager:
             size: self.size
             radius: [15]
 
-=======
->>>>>>> Stashed changes
 <InterestsScreen>:
     BoxLayout:
         orientation: 'vertical'
@@ -568,22 +542,7 @@ ScreenManager:
         spacing: 20
 
         Label:
-<<<<<<< Updated upstream
-            id: job_title
-            text: "Job: House Cleaning"
-
-        Label:
-            id: job_location
-            text: "Location: Makati City"
-
-        Label:
-            text: "Date & Time: May 25, 2025 - 9:00 AM"
-
-        Label:
-            text: "Salary: ₱1,500"
-=======
             text: "Job Details Here..."
->>>>>>> Stashed changes
 
         Button:
             text: "Accept Job"
