@@ -6,45 +6,59 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.utils import get_color_from_hex
+from kivymd.font_definitions import theme_font_styles
+from kivy.core.window import Window
 
+Window.size = (360, 640)
 
-# --- Database ---
-import firebase_admin
-from firebase_admin import credentials, firestore
-
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-
-
+print(theme_font_styles)
 # --- Auth screens ---
 
 class SignUpScreen(Screen):
     def sign_up(self):
-        email = self.ids.email.text
-        phone = self.ids.phone.text
-        first_name = self.ids.first_name.text
-        last_name = self.ids.last_name.text
-        birthdate = self.ids.birthdate.text
+        first_name = self.ids.first_name.text.strip()
+        last_name = self.ids.last_name.text.strip()
+        phone = self.ids.number.text.strip()
+        email = self.ids.email.text.strip()
+        birth_month = self.ids.birth_month.text
+        birth_day = self.ids.birth_day.text
+        birth_year = self.ids.birth_year.text
+        
 
+        if not first_name or not last_name or not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year":
+            print("Please fill all required fields!")
+            return
+        
+        birthdate = f"{birth_year}-{birth_month.zfill(2)}-{birth_day.zfill(2)}"
+        
         print("Signed Up:")
-        print(f"Email: {email}")
-        print(f"Phone: {phone}")
         print(f"First Name: {first_name}")
         print(f"Last Name: {last_name}")
+        print(f"Phone: {phone}")
+        print(f"Email: {email} (optional)")
         print(f"Birthdate: {birthdate}")
-
-        self.manager.current = 'select'
+        
+        self.manager.current = "select" 
 
 class LoginScreen(Screen):
     def login(self):
-        phone = self.ids.phone.text
-        birthdate = self.ids.birthdate.text
-
+        phone = self.ids.phone.text.strip()
+        birth_month = self.ids.birth_month.text
+        birth_day = self.ids.birth_day.text
+        birth_year = self.ids.birth_year.text
+        
+        if not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year":
+            print("Please fill all required fields!")
+            return
+        
+        birthdate = f"{birth_year}-{birth_month.zfill(2)}-{birth_day.zfill(2)}"
+        
         print("Logged In:")
         print(f"Phone: {phone}")
         print(f"Birthdate: {birthdate}")
-
-        self.manager.current = 'select'
+        
+        self.manager.current = "select"
 
 
 # --- Select screen ---
@@ -52,11 +66,11 @@ class LoginScreen(Screen):
 class SelectScreen(Screen):
     def on_worker(self):
         self.manager.transition = SlideTransition(direction='left')
-        self.manager.current = 'interests'  # worker flow goes to interests first
+        self.manager.current = 'interests'
 
     def on_employer(self):
         self.manager.transition = SlideTransition(direction='left')
-        self.manager.current = 'job_screen'  # employer flow goes to job screen with add
+        self.manager.current = 'job_screen'
 
 
 # --- Interests screen (Worker flow) ---
@@ -64,20 +78,18 @@ class SelectScreen(Screen):
 class InterestsScreen(Screen):
     def process_interests(self):
         selected = [btn.text for btn in self.ids.grid_layout.children if btn.state == 'down']
-        selected.reverse()  # because children are reversed
+        selected.reverse() 
         print("Selected Interests:")
         for item in selected:
             print("-", item)
-        # After selecting interests, show worker jobs screen
+        
         self.manager.current = 'job_screen_1'
-
-
 
 # --- Worker Job Screen ---
 
 class JobScreen1(Screen):
     def on_enter(self):
-
+        print("Entered JobScreen1")
         self.load_jobs_from_db()
 
     def load_jobs_from_db(self):
@@ -101,7 +113,8 @@ class JobScreen1(Screen):
                     style="outlined",
                     orientation="vertical",
                     padding=dp(10),
-                    size_hint=(None, None),
+                    size_hint=(0.45, None), 
+                    height=dp(100),
                     size=(self.ids.job_grid_1.width / 2 - dp(15), dp(100)),
                     ripple_behavior=True,
                 )
@@ -115,6 +128,7 @@ class JobScreen1(Screen):
 
                 def on_card_touch(instance, touch, job_data=job_data):
                     if instance.collide_point(*touch.pos):
+                        print("Card touched, switching to job_details")
                         details_screen = self.manager.get_screen('job_details')
                         details_screen.job_data = job_data 
                         self.manager.current = 'job_details'
@@ -164,6 +178,7 @@ class JobScreen2(Screen):
             size_hint=(None, None),
             size=(self.ids.job_grid.width / 2 - dp(20), dp(100)),
             ripple_behavior=True,
+            md_bg_color=get_color_from_hex('DD3846')
         )
         card.add_widget(MDLabel(
             text=text,
@@ -220,7 +235,6 @@ class EditableJobScreen(Screen):
             self.manager.current = "job_screen"
 
 
-
 class CombinedApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
@@ -230,4 +244,3 @@ class CombinedApp(MDApp):
 
 if __name__ == '__main__':
     CombinedApp().run()
-
