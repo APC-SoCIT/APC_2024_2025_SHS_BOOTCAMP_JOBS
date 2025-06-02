@@ -7,29 +7,19 @@ from kivymd.uix.label import MDLabel
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.utils import get_color_from_hex
-<<<<<<< Updated upstream
+
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
 
 Window.size = (360, 640)
 
 print(theme_font_styles)
-=======
 
-import firebase_admin
-from firebase_admin import credentials, firestore
-
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
-
->>>>>>> Stashed changes
 # --- Auth screens ---
 
 class SignUpScreen(Screen):
     def sign_up(self):
-<<<<<<< Updated upstream
+
         first_name = self.ids.first_name.text.strip()
         last_name = self.ids.last_name.text.strip()
         phone = self.ids.number.text.strip()
@@ -38,7 +28,6 @@ class SignUpScreen(Screen):
         birth_day = self.ids.birth_day.text
         birth_year = self.ids.birth_year.text
         
-=======
         email = self.ids.email.text
         phone = self.ids.phone.text
         first_name = self.ids.first_name.text
@@ -47,7 +36,7 @@ class SignUpScreen(Screen):
         birth_day = self.ids.birth_day.text
         birth_year = self.ids.birth_year.text
         birthdate = f"{birth_year}-{birth_month.zfill(2)}-{birth_day.zfill(2)}"
->>>>>>> Stashed changes
+
 
         if not first_name or not last_name or not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year":
             print("Please fill all required fields!")
@@ -66,7 +55,6 @@ class SignUpScreen(Screen):
 
 class LoginScreen(Screen):
     def login(self):
-<<<<<<< Updated upstream
         phone = self.ids.phone.text.strip()
         birth_month = self.ids.birth_month.text
         birth_day = self.ids.birth_day.text
@@ -78,14 +66,6 @@ class LoginScreen(Screen):
         
         birthdate = f"{birth_year}-{birth_month.zfill(2)}-{birth_day.zfill(2)}"
         
-=======
-        phone = self.ids.phone.text
-        birth_month = self.ids.birth_month.text
-        birth_day = self.ids.birth_day.text
-        birth_year = self.ids.birth_year.text
-        birthdate = f"{birth_year}-{birth_month.zfill(2)}-{birth_day.zfill(2)}"
-
->>>>>>> Stashed changes
         print("Logged In:")
         print(f"Phone: {phone}")
         print(f"Birthdate: {birthdate}")
@@ -117,12 +97,7 @@ class InterestsScreen(Screen):
         
         self.manager.current = 'job_screen_1'
 
-<<<<<<< Updated upstream
 # --- Worker Job Screen ---
-=======
-
-# --- Worker Job Screen (no add job button) ---
->>>>>>> Stashed changes
 
 class JobScreen1(Screen):
     def on_enter(self):
