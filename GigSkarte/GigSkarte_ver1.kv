@@ -30,25 +30,21 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-    ScrollView:
-        do_scroll_x: False
-        do_scroll_y: True
-
-        BoxLayout:
+        MDBoxLayout:
             orientation: "vertical"
             padding: "40dp"
             spacing: "20dp"
             size_hint_y: None
             height: self.minimum_height
-        Label:
+        MDLabel:
             text: "Email:"
-        TextInput:
+        MDTextInput:
             id: email
             multiline: False
 
-        Label:
+        MDLabel:
             text: "Phone:"
-        TextInput:
+        MDTextInput:
             id: phone
             multiline: False
             input_filter: 'int'
@@ -460,10 +456,6 @@ ScreenManager:
             size: self.size
             pos: self.pos
             radius: [20]
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 <JobScreen1>:
     BoxLayout:
@@ -519,8 +511,6 @@ ScreenManager:
             size_hint_y: None
             height: dp(50)
         
-        padding: 10
-
         Spinner:
             id: spinner_id
             text: "Select Job"
@@ -706,7 +696,7 @@ ScreenManager:
             MDButtonText:
                 text: "Save Job"
                 theme_text_color: "Custom"
-                text_color: "#EEEAE2
+                text_color: "#EEEAE2"
 
 
         MDButton:
