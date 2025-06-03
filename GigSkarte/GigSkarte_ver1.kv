@@ -72,6 +72,21 @@ ScreenManager:
             required: True
 
         MDTextField:
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: "40dp"
+            spacing: "20dp"
+            size_hint_y: None
+            height: self.minimum_height
+        MDLabel:
+            text: "Email:"
+        MDTextInput:
+            id: email
+            multiline: False
+
+        MDLabel:
+            text: "Phone:"
+        MDTextInput:
             id: phone
             hint_text: "Phone Number"
             text_color: 0, 0, 0, 1
@@ -415,6 +430,7 @@ ScreenManager:
             height: dp(50)
             padding: 10
 
+        
         Spinner:
             id: spinner_id
             text: "Select Job"
