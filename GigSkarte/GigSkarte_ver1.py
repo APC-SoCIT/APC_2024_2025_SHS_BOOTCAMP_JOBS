@@ -18,26 +18,18 @@ print(theme_font_styles)
 # --- Auth screens ---
 
 class SignUpScreen(Screen):
+    def login(self):
+        self.manager.current = "login" 
     def sign_up(self):
-
         first_name = self.ids.first_name.text.strip()
         last_name = self.ids.last_name.text.strip()
-        phone = self.ids.number.text.strip()
+        phone = self.ids.phone.text.strip()
         email = self.ids.email.text.strip()
         birth_month = self.ids.birth_month.text
         birth_day = self.ids.birth_day.text
         birth_year = self.ids.birth_year.text
         
-        email = self.ids.email.text
-        phone = self.ids.phone.text
-        first_name = self.ids.first_name.text
-        last_name = self.ids.last_name.text
-        birth_month = self.ids.birth_month.text
-        birth_day = self.ids.birth_day.text
-        birth_year = self.ids.birth_year.text
-        birthdate = f"{birth_year}-{birth_month.zfill(2)}-{birth_day.zfill(2)}"
-
-
+        
         if not first_name or not last_name or not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year":
             print("Please fill all required fields!")
             return
@@ -51,7 +43,7 @@ class SignUpScreen(Screen):
         print(f"Email: {email} (optional)")
         print(f"Birthdate: {birthdate}")
         
-        self.manager.current = "select" 
+        self.manager.current = "select"
 
 class LoginScreen(Screen):
     def login(self):

@@ -30,142 +30,76 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-    ScrollView:
-        do_scroll_x: False
-        do_scroll_y: True
+    BoxLayout:
+        orientation: "vertical"
+        padding: "40dp"
+        spacing: "20dp"
 
-        BoxLayout:
-            orientation: "vertical"
-            padding: "40dp"
-            spacing: "20dp"
+        MDLabel:
+            text: "[b]GigSkarte[/b]"
+            markup: True
+            halign: "center"
             size_hint_y: None
-            height: self.minimum_height
-        Label:
-            text: "Email:"
-        TextInput:
-            id: email
-            multiline: False
+            height: self.texture_size[1]
 
-        Label:
-            text: "Phone:"
-        TextInput:
+        MDLabel:
+            text: "Please enter your details:"
+            text_color: 0, 0, 0, 1
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        MDTextField:
+            id: first_name
+            hint_text: "First Name"
+            mode: "outlined"
+            size_hint_x: 1
+            helper_text: "Required"
+            helper_text_mode: "on_error"
+            required: True
+            mode: "outlined" 
+            text_color: 0, 0, 0, 1 
+            line_color_focus: 0.87, 0.22, 0.27, 1  
+
+        MDTextField:
+            id: last_name
+            hint_text: "Last Name"
+            text_color: 0, 0, 0, 1
+            fill_color: 1, 1, 1, 1
+            line_color_focus: 0, 0, 0, 1
+            helper_text: "Required"
+            helper_text_mode: "on_error"
+            required: True
+
+        MDTextField:
             id: phone
-            multiline: False
-            input_filter: 'int'
+            hint_text: "Phone Number"
+            text_color: 0, 0, 0, 1
+            fill_color: 1, 1, 1, 1
+            line_color_focus: 0, 0, 0, 1
+            helper_text: "Required"
+            helper_text_mode: "on_error"
+            required: True
+            input_filter: "int"
 
-            MDLabel:
-                text: "[b]GigSkarte[/b]"
-                markup: True
-                halign: "center"
-                size_hint_y: None
-                height: self.texture_size[1]
+        MDTextField:
+            id: email
+            hint_text: "Email Address (optional)"
+            text_color: 0, 0, 0, 1
+            fill_color: 1, 1, 1, 1
+            line_color_focus: 0, 0, 0, 1
+            helper_text_mode: "on_focus"
 
-            MDLabel:
-                text: "Please enter your details:"
-                halign: "center"
-                size_hint_y: None
-                height: self.texture_size[1]
+        MDLabel:
+            text: "Birthdate"
+            text_color: 0, 0, 0, 1
+            size_hint_y: None
+            height: "20dp"
 
-            MDTextField:
-                id: first_name
-                hint_text: "First Name*"
-                mode: "filled"
-                fill_color: 1, 1, 1, 1
-                foreground_color: 0, 0, 0, 1 
-                line_color_focus: 0, 0, 0, 1
-                line_color_normal: 0.5, 0.5, 0.5, 1
-                helper_text: "Required"
-                helper_text_mode: "on_error"
-                required: True
-
-            MDTextField:
-                id: last_name
-                hint_text: "Last Name*"
-                mode: "filled"
-                fill_color: 1, 1, 1, 1
-                foreground_color: 0, 0, 0, 1 
-                line_color_focus: 0, 0, 0, 1
-                line_color_normal: 0.5, 0.5, 0.5, 1
-                helper_text: "Required"
-                helper_text_mode: "on_error"
-                required: True
-
-            MDTextField:
-                id: number
-                hint_text: "Phone Number*"
-                mode: "filled"
-                fill_color: 1, 1, 1, 1
-                foreground_color: 0, 0, 0, 1 
-                line_color_focus: 0, 0, 0, 1
-                line_color_normal: 0.5, 0.5, 0.5, 1
-                helper_text: "Required"
-                helper_text_mode: "on_error"
-                required: True
-                input_filter: "int"
-
-            MDTextField:
-                id: email
-                hint_text: "Email Address (optional)"
-                mode: "filled"
-                fill_color: 1, 1, 1, 1
-                foreground_color: 0, 0, 0, 1 
-                line_color_focus: 0, 0, 0, 1
-                line_color_normal: 0.5, 0.5, 0.5, 1
-                helper_text_mode: "on_focus"
-
-            MDLabel:
-                text: "Birthdate*"
-                size_hint_y: None
-                height: "20dp"
-                bold: True
-
-            BoxLayout:
-                size_hint_y: None
-                height: "40dp"
-                spacing: "15dp"
-
-                Spinner:
-                    id: birth_month
-                    text: "Month"
-                    values: [str(i) for i in range(1, 13)]
-                    size_hint_x: 0.3
-
-                Spinner:
-                    id: birth_day
-                    text: "Day"
-                    values: [str(i) for i in range(1, 32)]
-                    size_hint_x: 0.3
-
-                Spinner:
-                    id: birth_year
-                    text: "Year"
-                    values: [str(i) for i in range(1950, 2025)]
-                    size_hint_x: 0.4
-
-            BoxLayout:
-                size_hint_y: None
-                height: "50dp"
-                spacing: "20dp"
-                padding: [0, 10, 0, 0] 
-
-                Button:
-                    text: "Sign Up"
-                    background_color: 0.87, 0.22, 0.27, 1
-                    color: 1, 1, 1, 1
-                    on_release: root.sign_up()
-
-                Button:
-                    text: "Already have an account? Log in"
-                    background_color: 0, 0, 0, 0
-                    color: 0.87, 0.22, 0.27, 1
-                    on_release:
-                        app.root.current = "login"
-        Label:
-            text: "Birthdate:"
         BoxLayout:
             size_hint_y: None
-            height: dp(30)
-            spacing: dp(5)
+            height: "40dp"
+            spacing: "15dp"
 
             Spinner:
                 id: birth_month
@@ -185,14 +119,26 @@ ScreenManager:
                 values: [str(i) for i in range(1950, 2025)]
                 size_hint_x: 0.4
 
-        Button:
-            text: "Sign Up"
-            on_release: root.sign_up()
+        BoxLayout:
+            size_hint_y: None
+            height: "50dp"
+            spacing: "20dp"
+            padding: [0, 10, 0, 0]
 
-        Button:
-            text: "Go to Login"
-            on_release:
-                root.manager.current = "login"
+            Button:
+                text: "Sign Up"
+                background_color: 0.87, 0.22, 0.27, 1 
+                on_release: root.sign_up()
+
+            Button:
+                text: "Already have an account? Log in"
+                font_size: "14sp"
+                background_color: 0, 0, 0, 0
+                color: 0.87, 0.22, 0.27, 1
+                halign: "center"
+                text_size: self.width, None
+                size_hint_x: 1
+                on_release: root.login()
 
 <LoginScreen>:
     name: "login"
@@ -214,22 +160,24 @@ ScreenManager:
             halign: "center"
 
         MDLabel:
-            text: "Please enter your details:"
+            text: "Login to your account"
+            text_color: 0, 0, 0, 1
             halign: "center"
 
         MDTextField:
-            id: number
-            hint_text: "Phone Number*"
+            id: phone
+            text: "Phone Number"
+            text_color: 0, 0, 0, 1
             mode: "filled"
             input_filter: "int"
             max_text_length: 15
             required: True
 
         MDLabel:
-            text: "Birthdate*"
+            text: "Birthdate"
+            text_color: 0, 0, 0, 1
             size_hint_y: None
             height: "20dp"
-            bold: True
 
         BoxLayout:
             size_hint_y: None
@@ -266,53 +214,6 @@ ScreenManager:
                 color: 1, 1, 1, 1
                 on_release: root.login()
 
-            Button:
-                text: "Don't have an account? Sign Up"
-                background_color: 0, 0, 0, 0
-                color: 0.87, 0.22, 0.27, 1
-                on_release:
-                    app.root.current = "signup"
-        Label:
-            text: "Phone:"
-        TextInput:
-            id: phone
-            multiline: False
-            input_filter: 'int'
-
-        Label:
-            text: "Birthdate:"
-        BoxLayout:
-            size_hint_y: None
-            height: dp(30)
-            spacing: dp(5)
-
-            Spinner:
-                id: birth_month
-                text: "Month"
-                values: [str(i) for i in range(1, 13)]
-                size_hint_x: 0.3
-
-            Spinner:
-                id: birth_day
-                text: "Day"
-                values: [str(i) for i in range(1, 32)]
-                size_hint_x: 0.3
-
-            Spinner:
-                id: birth_year
-                text: "Year"
-                values: [str(i) for i in range(1950, 2025)]
-                size_hint_x: 0.4
-
-        Button:
-            text: "Login"
-            on_release: root.login()
-
-        Button:
-            text: "Go to Sign Up"
-            on_release:
-                root.manager.current = "signup"
-
 <SelectScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -341,7 +242,6 @@ ScreenManager:
             background_normal: ''
             background_color: 0.87, 0.22, 0.27, 1  # DD3846
             color: 1, 1, 1, 1
-            background_color: 0.2, 0.6, 0.8, 1
             on_release: root.on_worker()
 
         Button:
@@ -351,7 +251,6 @@ ScreenManager:
             background_normal: ''
             background_color: 0.87, 0.22, 0.27, 1  # DD3846
             color: 1, 1, 1, 1
-            background_color: 0.1, 0.7, 0.3, 1
             on_release: root.on_employer()
             
 
@@ -396,7 +295,7 @@ ScreenManager:
             color: 0, 0, 0, 1
 
         GridLayout:
-            id: grid_layout   # <-- here to match your python code
+            id: grid_layout 
             cols: 2
             spacing: dp(10)
             size_hint_y: 0.7
@@ -460,10 +359,6 @@ ScreenManager:
             size: self.size
             pos: self.pos
             radius: [20]
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 <JobScreen1>:
     BoxLayout:
@@ -518,8 +413,7 @@ ScreenManager:
             text_color_disabled: "#EEEAE2"
             size_hint_y: None
             height: dp(50)
-        
-        padding: 10
+            padding: 10
 
         Spinner:
             id: spinner_id
@@ -706,7 +600,7 @@ ScreenManager:
             MDButtonText:
                 text: "Save Job"
                 theme_text_color: "Custom"
-                text_color: "#EEEAE2
+                text_color: "#EEEAE2"
 
 
         MDButton:
