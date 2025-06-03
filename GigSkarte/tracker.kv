@@ -1,0 +1,206 @@
+<TrackingEarningsScreen>:
+    name: "earnings"
+
+    ScrollView:
+        size_hint: 1, 1
+
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing: dp(10)
+            padding: dp(16)
+            size_hint_y: None
+            height: self.minimum_height  
+
+            canvas.before:
+                Color:
+                    rgba: 0.93, 0.92, 0.89, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            MDLabel:
+                text: "Earnings"
+                bold: True
+                font_size: "28sp"
+                halign: "center"
+                size_hint_y: None
+                height: dp(40)  
+
+            MDLabel:
+                text: "This Month"
+                theme_text_color: "Custom"
+                text_color: .5, .5, .5, 1
+                font_size: "14sp"
+                halign: "left"
+                size_hint_y: None
+                height: dp(20)  
+
+            MDRelativeLayout:
+                size_hint_y: None
+                height: dp(100)
+                size_hint_x: 1
+
+                MDFloatLayout:
+                    size_hint: 0.95, None
+                    height: dp(80)
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    radius: [20]
+
+                    canvas.before:
+                        Color:
+                            rgba: 0.87, 0.22, 0.27, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [20]
+
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_x: None
+                        width: self.minimum_width
+                        height: dp(80)
+                        spacing: dp(4)
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                        MDLabel:
+                            text: "PHP"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 0.3
+                            font_size: "20sp"
+                            size_hint_x: None
+                            width: dp(100)  
+                            size_hint_y: None
+                            height: dp(80)
+                            halign: "right"
+                            text_size: self.width, self.height
+                            padding: [0, 0, 0, 0]
+
+
+                        MDLabel:
+                            text: "₱1,234"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            font_size: "32sp"
+                            bold: True
+                            size_hint_x: None
+                            width: dp(100)  
+                            size_hint_y: None
+                            height: dp(80)
+                            valign: "middle"
+                            text_size: self.width, self.height
+
+            MDLabel:
+                text: "Today"
+                font_size: "16sp"
+                bold: True
+                halign: "left"
+                size_hint_y: None
+                height: dp(25)  
+
+            MDCard:
+                orientation: "horizontal"
+                padding: dp(8)
+                size_hint_y: None
+                height: dp(50)
+                radius: [15]
+                md_bg_color: 1, 1, 1, 1
+                elevation: 1
+                size_hint_x: 0.95
+                pos_hint: {"center_x": 0.5}
+
+                MDIcon:
+                    icon: "washing-machine"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: "#DD3846"
+                    size_hint: None, None
+                    size: dp(30), dp(30)
+                    pos_hint: {"center_y": 0.5}
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: dp(8), 0
+                    size_hint_y: None
+                    height: dp(34)
+
+                    MDLabel:
+                        text: "Laundry"
+                        font_size: "14sp"
+                        halign: "left"
+                        bold: True
+                        size_hint_y: None
+                        height: dp(20)
+
+                Widget:
+                    size_hint_x: 1
+
+                MDLabel:
+                    text: "₱200"
+                    halign: "right"
+                    font_size: "12sp"
+                    valign: "middle"
+                    size_hint_x: None
+                    width: dp(40)
+                    pos_hint: {"center_y": 0.5}
+
+            MDLabel:
+                text: "Yesterday"
+                font_size: "16sp"
+                bold: True
+                halign: "left"
+                size_hint_y: None
+                height: dp(25)
+
+            MDCard:
+                orientation: "horizontal"
+                padding: dp(8)
+                size_hint_y: None
+                height: dp(50)
+                radius: [15]
+                md_bg_color: 1, 1, 1, 1
+                elevation: 1
+                size_hint_x: 0.95
+                pos_hint: {"center_x": 0.5}
+
+                MDIcon:
+                    icon: "food"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: "#3B7DD8"
+                    size_hint: None, None
+                    size: dp(30), dp(30)
+                    pos_hint: {"center_y": 0.5}
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: dp(8), 0
+                    size_hint_y: None
+                    height: dp(34)
+
+                    MDLabel:
+                        text: "Groceries"
+                        font_size: "14sp"
+                        halign: "left"
+                        bold: True
+                        size_hint_y: None
+                        height: dp(20)
+
+                Widget:
+                    size_hint_x: 1
+
+                MDLabel:
+                    text: "₱500"
+                    halign: "right"
+                    font_size: "12sp"
+                    valign: "middle"
+                    size_hint_x: None
+                    width: dp(40)
+                    pos_hint: {"center_y": 0.5}
+                    
+<TrackingEarningsScreen>:
+    MDLabel:
+        id: earnings_label
+        text: "Total Earnings: ₱0"
+        halign: "center"
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        font_style: "H5"

@@ -7,6 +7,7 @@ from kivymd.uix.label import MDLabel
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.utils import get_color_from_hex
+from kivymd.uix.textfield import MDTextField
 
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
@@ -14,6 +15,17 @@ from kivy.core.window import Window
 Window.size = (360, 640)
 
 print(theme_font_styles)
+
+# --- Database ---
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+# ------------------
+
 
 # --- Auth screens ---
 
@@ -45,6 +57,35 @@ class SignUpScreen(Screen):
         
         self.manager.current = "select"
 
+# --- saving to database & to app ---        
+        try:
+            db.collection('users').document(phone).set({
+                'first_name': first_name,
+                'last_name': last_name,
+                'phone': phone,
+                'email': email,
+                'birthdate': birthdate
+            })
+            print("User signed up and data saved!")
+
+            app = MDApp.get_running_app()
+            if not hasattr(app, 'session'):
+                app.session ={}
+                
+            app.session['user'] = {
+                'first_name': first_name,
+                'last_name': last_name,
+                'phone': phone,
+                'email': email,
+                'birthdate': birthdate
+            }
+
+            self.manager.current = "select"
+
+        except Exception as e:
+            print(f"Error saving data: {e}")
+
+
 class LoginScreen(Screen):
     def login(self):
         phone = self.ids.phone.text.strip()
@@ -64,6 +105,25 @@ class LoginScreen(Screen):
         
         self.manager.current = "select"
 
+# --- saving to database & to app ---
+        try:
+            user_doc = db.collection('users').document(phone).get()
+            if user_doc.exists:
+                user_data = user_doc.to_dict()
+                if user_data.get('birthdate') == birthdate:
+                    print("User logged in successfully!")
+
+                    app = MDApp.get_running_app()
+                    app.current_user = user_data
+
+                    self.manager.current = "select"
+                else:
+                    print("Birthdate mismatch! Check your input.")
+            else:
+                print("User not found. Please sign up first.")
+        except Exception as e:
+            print(f"Error fetching data: {e}")
+
 
 # --- Select screen ---
 
@@ -75,7 +135,6 @@ class SelectScreen(Screen):
     def on_employer(self):
         self.manager.transition = SlideTransition(direction='left')
         self.manager.current = 'job_screen'
-
 
 # --- Interests screen (Worker flow) ---
 
@@ -240,6 +299,12 @@ class EditableJobScreen(Screen):
 
 
 class CombinedApp(MDApp):
+    current_user = None
+    def build(self):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.session = {}
+
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Blue"
