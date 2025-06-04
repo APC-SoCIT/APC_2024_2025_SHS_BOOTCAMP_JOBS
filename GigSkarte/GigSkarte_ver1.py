@@ -8,9 +8,16 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.utils import get_color_from_hex
 from kivymd.uix.textfield import MDTextField
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.graphics import Color, RoundedRectangle
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.button import Button
+from kivy.properties import StringProperty
 
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
+
 
 Window.size = (360, 640)
 
@@ -104,13 +111,28 @@ class LoginScreen(Screen):
             user_doc = db.collection('users').document(phone).get()
             if user_doc.exists:
                 user_data = user_doc.to_dict()
-                if user_data.get('birthdate') == birthdate and user_data_get('password') == password:
+                if user_data.get('birthdate') == birthdate and user_data.get('password') == password:
                     print("User logged in successfully!")
 
                     app = MDApp.get_running_app()
                     app.current_user = user_data
 
-                    self.manager.current = "select"
+                    if not hasattr(app, 'session'):
+                        app.session = {}
+                    app.session['user'] = user_data
+
+                    role = user_data.get('role', None)
+
+                    if role == 'worker':
+                        interest = user_data.get('interests', [])
+                        if interest:
+                            self.manager.current = 'job_screen_1'
+                        else:
+                            self.manager.current = 'interests'
+                    elif role == 'employer':
+                        self.manager.current = 'job_screen'
+                    else:
+                        self.manager.current = "select"
                 else:
                     print("Incorrect birthdate or password.")
             else:
@@ -123,23 +145,85 @@ class LoginScreen(Screen):
 
 class SelectScreen(Screen):
     def on_worker(self):
+        self.save_user_role('worker')
         self.manager.transition = SlideTransition(direction='left')
         self.manager.current = 'interests'
 
     def on_employer(self):
+        self.save_user_role('employer')
         self.manager.transition = SlideTransition(direction='left')
         self.manager.current = 'job_screen'
+
+    def save_user_role(self, role):
+        try:
+            app = MDApp.get_running_app()
+            user_id = None
+            if hasattr(app, 'session') and 'user' in app.session:
+                user_id = app.session['user'].get('phone')
+            elif hasattr(app, 'current_user'):
+                user_id = app.current_user.get('phone')
+
+            if not user_id:
+                print("User ID not found in session or current user!")
+                user_id = 'fallback_user'
+                return
+
+            doc_ref = db.collection('users').document(user_id)
+            doc_ref.set({'role': role}, merge=True)
+            print(f"Role '{role}' saved for user {user_id}")
+
+            
+            if not hasattr(app, 'session'):
+                app.session = {}
+            if 'user' not in app.session:
+                app.session['user'] = {}
+
+            app.session['user']['role'] = role
+            print(f"Session updated with role: {role}")
+
+        except Exception as e:
+            print(f"Error saving role: {e}")
 
 # --- Interests screen (Worker flow) ---
 
 class InterestsScreen(Screen):
     def process_interests(self):
         selected = [btn.text for btn in self.ids.grid_layout.children if btn.state == 'down']
-        selected.reverse() 
+        selected.reverse()
+
         print("Selected Interests:")
         for item in selected:
             print("-", item)
-        
+
+        try:
+            app = MDApp.get_running_app()
+
+            user_id = None
+            if hasattr(app, 'session') and 'user' in app.session:
+                user_id = app.session['user'].get('phone')
+            elif hasattr(app, 'current_user'):
+                user_id = app.current_user.get('phone')
+
+            if not user_id:
+                print("User ID not found in session or current_user!")
+                return
+
+            doc_ref = db.collection('users').document(user_id)
+            doc_ref.set({'interests': selected}, merge=True)
+            print("Interests saved successfully!")
+
+           
+            if not hasattr(app, 'session'):
+                app.session = {}
+            if 'user' not in app.session:
+                app.session['user'] = {}
+
+            app.session['user']['interests'] = selected
+            print(f"Session updated with interests: {selected}")
+
+        except Exception as e:
+            print(f"Error saving interests: {e}")
+
         self.manager.current = 'job_screen_1'
 
 # --- Worker Job Screen ---
@@ -147,18 +231,24 @@ class InterestsScreen(Screen):
 class JobScreen1(Screen):
     def on_enter(self):
         print("Entered JobScreen1")
+        self.session_viewed_jobs = 0
+        self.total_jobs_loaded = 0 
         self.load_jobs_from_db()
+    
 
     def load_jobs_from_db(self):
-        
         self.ids.job_grid_1.clear_widgets()
 
         try:
             jobs_ref = db.collection('jobs')
             jobs = jobs_ref.stream()
 
+            job_count = 0
+
             for job in jobs:
                 job_data = job.to_dict()
+                job_count += 1
+
                 title = job_data.get('title', 'No title')
                 location = job_data.get('location', 'No location')
                 time = job_data.get('time', 'No time')
@@ -182,17 +272,20 @@ class JobScreen1(Screen):
                     text_size=(card.width - dp(20), None)
                 ))
 
-
                 def on_card_touch(instance, touch, job_data=job_data):
                     if instance.collide_point(*touch.pos):
                         print("Card touched, switching to job_details")
+                        self.session_viewed_jobs += 1
+                        print(f"Jobs viewed this session: {self.session_viewed_jobs}")
                         details_screen = self.manager.get_screen('job_details')
-                        details_screen.job_data = job_data 
+                        details_screen.set_job_details(job_data) 
                         self.manager.current = 'job_details'
 
                 card.bind(on_touch_down=on_card_touch)
-
                 self.ids.job_grid_1.add_widget(card)
+
+            self.total_jobs_loaded = job_count
+            print(f"Total jobs loaded: {self.total_jobs_loaded}")
 
         except Exception as e:
             popup = Popup(
@@ -202,11 +295,12 @@ class JobScreen1(Screen):
             )
             popup.open()
 
-
 # --- Job Details Screen (for worker) ---
 
 class JobDetailsScreen(Screen):
     job_data = {}
+    jobs_viewed = 0
+    jobs_accepted = 0
 
     def on_pre_enter(self):
         self.ids.job_title.text = f"Job: {self.job_data.get('title', '')}"
@@ -214,18 +308,63 @@ class JobDetailsScreen(Screen):
         self.ids.job_time.text = f"Date & Time: {self.job_data.get('time', '')}"
         self.ids.job_salary.text = f"Salary: ₱{self.job_data.get('salary', '')}"
 
-    def accept_job(self):
-        popup = Popup(
-            title='Job Accepted',
-            content=Label(text='You have accepted the job offer.'),
-            size_hint=(0.6, 0.4)
-        )
-        popup.open()
+        JobDetailsScreen.jobs_viewed += 1
+        print(f"Viewed Jobs this session: {JobDetailsScreen.jobs_viewed}")
 
+    def set_job_details(self, job_data):
+        self.job_data = job_data
+        self.ids.job_title_label.text = job_data.get('title', 'No Title')
+        self.ids.location_label.text = job_data.get('location', 'No Location')
+        self.ids.time_label.text = job_data.get('time', 'No Time')
+        self.ids.salary_label.text = job_data.get('salary', 'No Salary')
+
+    def accept_job(self):
+        pending_screen = self.manager.get_screen('pending_jobs')
+        pending_screen.add_job(self.job_data)
+        self.manager.current = 'pending_jobs'
+        JobDetailsScreen.jobs_accepted += 1
+        print(f"Accepted Jobs this session: {JobDetailsScreen.jobs_accepted}")
+
+        try:
+            app = MDApp.get_running_app()
+            user_id = None
+            if hasattr(app, 'session') and 'user' in app.session:
+                user_id = app.session['user'].get('phone')
+            elif hasattr(app, 'current_user'):
+                user_id = app.current_user.get('phone')
+
+            if not user_id:
+                print("User ID not found in session or current_user!")
+                return
+
+            accepted_job = {
+                'title': self.job_data.get('title', ''),
+                'location': self.job_data.get('location', ''),
+                'time': self.job_data.get('time', ''),
+                'salary': self.job_data.get('salary', '')
+            }
+
+            db.collection('users').document(user_id).update({
+                'accepted_jobs': firestore.ArrayUnion([accepted_job])
+            })
+
+            print("Accepted job saved to Firestore!")
+
+            popup = Popup(
+                title='Job Accepted',
+                content=Label(text='You have accepted the job offer.'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
+
+        except Exception as e:
+            print(f'Error saving accepted job: {e}')
 
 # --- Employer Job Screen (with add job button) ---
 
 class JobScreen2(Screen):
+    jobs_posted_this_session = 0
+
     def add_card(self, job_title, location, time, salary):
         text = f"{job_title}\nLocation: {location}\nTime: {time}\nSalary: {salary}"
         card = MDCard(
@@ -245,10 +384,29 @@ class JobScreen2(Screen):
         ))
         self.ids.job_grid.add_widget(card)
 
+        JobScreen2.jobs_posted_this_session += 1
+        print(f"Jobs Posted This Session: {JobScreen2.jobs_posted_this_session}")
+
+    def load_jobs_from_db(self):
+        self.ids.job_grid.clear_widgets()
+        
+        jobs_ref = db.collection('jobs')
+        docs = jobs_ref.stream()
+
+        for doc in docs:
+            job = doc.to_dict()
+            self.add_card(
+                job_title=job.get('job_title', 'No Title'),
+                location=job.get('location', 'No Location'),
+                time=job.get('time', 'No Time'),
+                salary=job.get('salary', 'No Salary')
+            )
 
 # --- Editable Job Screen (for employers to add jobs) ---
 
 class EditableJobScreen(Screen):
+    jobs_added_this_session = 0 
+
     def save_details(self):
         title = self.ids.edit_title.text.strip()
         location = self.ids.edit_location.text.strip()
@@ -275,12 +433,16 @@ class EditableJobScreen(Screen):
                 return
 
             job_screen = self.manager.get_screen('job_screen')
-            job_screen.add_card(title, location, time, salary)
+            job_screen.load_jobs_from_db()
 
             self.ids.edit_title.text = ""
             self.ids.edit_location.text = ""
             self.ids.edit_time.text = ""
             self.ids.edit_salary.text = ""
+
+            
+            EditableJobScreen.jobs_added_this_session += 1
+            print(f"Jobs Added This Session: {EditableJobScreen.jobs_added_this_session}")
 
             popup = Popup(
                 title='Job Added',
@@ -291,6 +453,35 @@ class EditableJobScreen(Screen):
 
             self.manager.current = "job_screen"
 
+# --- Pending Screen ---
+class JobBox(BoxLayout):
+    job_title = StringProperty("")
+    location = StringProperty("")
+    salary = StringProperty("")
+    date_time = StringProperty("")
+
+
+class PendingJobsScreen(Screen):
+    def on_kv_post(self, base_widget):
+        pass  # Don't add anything yet, wait for external trigger
+
+    def add_job(self, job_data):
+        job_box = JobBox(
+            text=f"{job_data.get('title')} - {job_data.get('location')}- {job_data.get('time')} - {job_data.get('salary')}",
+            size_hint_y=None,
+            height=dp(40),
+            job_title=job_data["title"],
+            location=job_data["location"],
+            salary=job_data["salary"],
+            date_time=job_data["date_time"]
+        )
+        self.ids.job_list.add_widget(job_box)
+
+    def clear_jobs(self):
+        self.ids.job_list.clear_widgets()
+
+    def go_back(self):
+        App.get_running_app().stop()
 
 class CombinedApp(MDApp):
     current_user = None
@@ -303,6 +494,26 @@ class CombinedApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Blue"
         return Builder.load_file("GigSkarte_ver1.kv")
+    
+# --- Accepted Job Screen (Pending) --- 
+class AcceptedJobsScreen(Screen):
+    def on_kv_post(self, base_widget):
+        pass  # Wait for external trigger or load accepted jobs here
+
+    def add_job(self, job_data):
+        job_box = JobBox(
+            job_title=job_data["title"],
+            location=job_data["location"],
+            salary=job_data["salary"],
+            date_time=job_data["date_time"]
+        )
+        self.ids.job_list.add_widget(job_box)
+
+    def clear_jobs(self):
+        self.ids.job_list.clear_widgets()
+
+    def go_back(self):
+        App.get_running_app().stop() 
 
 
 if __name__ == '__main__':

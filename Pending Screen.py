@@ -7,7 +7,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.graphics import Color, RoundedRectangle
 
-Window.size = (400, 700)
+Window.size = (360, 640)
 
 class JobBox(BoxLayout):
     def __init__(self, job_title, location, salary, date_time, **kwargs):

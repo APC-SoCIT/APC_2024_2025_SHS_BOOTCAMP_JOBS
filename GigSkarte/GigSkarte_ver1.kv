@@ -20,6 +20,8 @@ ScreenManager:
         name: "job_screen"
     EditableJobScreen:
         name: "editable_screen"
+    PendingJobsScreen:
+        name: "pending_screen"
 
 <SignUpScreen>:
     name: "signup"
@@ -423,8 +425,6 @@ ScreenManager:
                 cols: 2
                 spacing: dp(10)
                 padding: dp(10)
-                on_touch_down:
-                    if self.collide_point(*args[1].pos): root.show_job_details()
                 MDLabel:
                     text: "Job 4 - Click me"
                     halign: "center"
@@ -476,7 +476,7 @@ ScreenManager:
                 text_color: "#DD3846"
 
         MDLabel:
-            id: job_title
+            id: job_title_label
             text: "Job: "
             theme_text_color: "Custom"
             text_color: "#DD3846"
@@ -514,30 +514,32 @@ ScreenManager:
 
         MDTopAppBar:
             type: "small"
-
             MDTopAppBarLeadingButtonContainer:
-
                 MDActionTopAppBarButton:
                     icon: "menu"
-
             MDTopAppBarTitle:
                 text: "GigSkarte"
                 halign: "center"
 
         MDLabel:
             text: "Your Job Listings"
-            size_hint_y: 0.1
+            size_hint_y: None
+            height: dp(40)
             font_size: 24
             halign: "center"
             theme_text_color: "Custom"
             text_color: "#000000"
 
-        GridLayout:
-            id: job_grid
-            cols: 2
-            spacing: dp(10)
-            padding: dp(15)
+        ScrollView:
             size_hint_y: 0.8
+
+            GridLayout:
+                id: job_grid
+                cols: 2
+                spacing: dp(10)
+                padding: dp(15)
+                size_hint_y: None
+                height: self.minimum_height
 
         MDFabButton:
             style: "large"
@@ -549,7 +551,7 @@ ScreenManager:
             pos_hint: {"right": 0.95, "y": 0.05}
             on_release:
                 app.root.current = "editable_screen"
-        
+
         MDNavigationBar:
             text_color_active: "#FFFFFF"
             text_color_disabled: "#AAAAAA"
@@ -574,7 +576,7 @@ ScreenManager:
 
 
 <EditableJobScreen>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
         padding: 20
         spacing: 15
@@ -640,4 +642,175 @@ ScreenManager:
             MDButtonText:
                 text: "Back"
 
+<JobBox>:
+    orientation: 'vertical'
+    padding: 10
+    spacing: 10
+    size_hint_y: None
+    height: 180
+    canvas.before:
+        Color:
+            rgba: 1, 0, 0, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10]
+    GridLayout:
+        cols: 2
+        spacing: 5
+        size_hint_y: None
+        height: 160
 
+        Label:
+            text: "[b]Job Title:[/b]"
+            markup: True
+            halign: "left"
+            valign: "middle"
+            text_size: self.size
+        Label:
+            text: root.job_title
+            halign: "right"
+            valign: "middle"
+            text_size: self.size
+
+        Label:
+            text: "[b]Location:[/b]"
+            markup: True
+            halign: "left"
+            valign: "middle"
+            text_size: self.size
+        Label:
+            text: root.location
+            halign: "right"
+            valign: "middle"
+            text_size: self.size
+
+        Label:
+            text: "[b]Salary:[/b]"
+            markup: True
+            halign: "left"
+            valign: "middle"
+            text_size: self.size
+        Label:
+            text: root.salary
+            halign: "right"
+            valign: "middle"
+            text_size: self.size
+
+        Label:
+            text: "[b]Date & Time:[/b]"
+            markup: True
+            halign: "left"
+            valign: "middle"
+            text_size: self.size
+        Label:
+            text: root.date_time
+            halign: "right"
+            valign: "middle"
+            text_size: self.size
+
+        Label:
+            text: "[b]Status:[/b]"
+            markup: True
+            halign: "left"
+            valign: "middle"
+            text_size: self.size
+        Label:
+            text: ""
+            halign: "right"
+            valign: "middle"
+            text_size: self.size
+
+<PendingJobsScreen>:
+    name: "pending_jobs"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: 0.96, 0.93, 0.89, 1
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            padding: 5
+            spacing: 5
+            Button:
+                text: "<"
+                font_size: 24
+                background_color: 1, 1, 1, 1
+                color: 1, 0, 0, 1
+                size_hint_x: None
+                width: 50
+                on_press: root.go_back()
+
+        Label:
+            text: "[b]PENDING JOBS[/b]"
+            markup: True
+            font_size: 24
+            color: 0, 0, 0, 1
+            size_hint_y: None
+            height: 50
+            halign: "center"
+            valign: "middle"
+            text_size: self.size
+
+        ScrollView:
+            BoxLayout:
+                id: job_list
+                orientation: 'vertical'
+                spacing: 15
+                padding: 10
+                size_hint_y: None
+                height: self.minimum_height
+
+<AcceptedJobsScreen>:
+    name: "accepted_jobs"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: 0.96, 0.93, 0.89, 1
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            padding: 5
+            spacing: 5
+            Button:
+                text: "<"
+                font_size: 24
+                background_color: 1, 1, 1, 1
+                color: 1, 0, 0, 1
+                size_hint_x: None
+                width: 50
+                on_press: root.go_back()
+
+        Label:
+            text: "[b]ACCEPTED JOBS[/b]"
+            markup: True
+            font_size: 24
+            color: 0, 0, 0, 1
+            size_hint_y: None
+            height: 50
+            halign: "center"
+            valign: "middle"
+            text_size: self.size
+
+        ScrollView:
+            BoxLayout:
+                id: job_list
+                orientation: 'vertical'
+                spacing: 15
+                padding: 10
+                size_hint_y: None
+                height: self.minimum_height

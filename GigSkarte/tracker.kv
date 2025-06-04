@@ -26,6 +26,8 @@
                 size_hint_y: None
                 height: dp(40)  
 
+            # Removed the earnings_label here
+
             MDLabel:
                 text: "This Month"
                 theme_text_color: "Custom"
@@ -75,9 +77,9 @@
                             text_size: self.width, self.height
                             padding: [0, 0, 0, 0]
 
-
                         MDLabel:
-                            text: "₱1,234"
+                            id: total_amount_label
+                            text: "₱0"
                             theme_text_color: "Custom"
                             text_color: 1, 1, 1, 1
                             font_size: "32sp"
@@ -98,6 +100,7 @@
                 height: dp(25)  
 
             MDCard:
+                id: today_card
                 orientation: "horizontal"
                 padding: dp(8)
                 size_hint_y: None
@@ -135,6 +138,7 @@
                     size_hint_x: 1
 
                 MDLabel:
+                    id: today_earning
                     text: "₱200"
                     halign: "right"
                     font_size: "12sp"
@@ -152,6 +156,7 @@
                 height: dp(25)
 
             MDCard:
+                id: yesterday_card
                 orientation: "horizontal"
                 padding: dp(8)
                 size_hint_y: None
@@ -189,6 +194,7 @@
                     size_hint_x: 1
 
                 MDLabel:
+                    id: yesterday_earning
                     text: "₱500"
                     halign: "right"
                     font_size: "12sp"
@@ -196,11 +202,3 @@
                     size_hint_x: None
                     width: dp(40)
                     pos_hint: {"center_y": 0.5}
-                    
-<TrackingEarningsScreen>:
-    MDLabel:
-        id: earnings_label
-        text: "Total Earnings: ₱0"
-        halign: "center"
-        pos_hint: {"center_x": 0.5, "center_y": 0.5}
-        font_style: "H5"
