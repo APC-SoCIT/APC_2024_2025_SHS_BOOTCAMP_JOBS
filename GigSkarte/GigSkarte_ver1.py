@@ -23,7 +23,7 @@ Window.size = (360, 640)
 
 print(theme_font_styles)
 
-# --- Auth screens ---
+# Authentication
 
 class SignUpScreen(Screen):
     def login(self):
@@ -54,7 +54,7 @@ class SignUpScreen(Screen):
         
         self.manager.current = "select"
 
-# --- saving to database & to app ---         
+# saving to database & to app (sign up)         
         try:
             db.collection('users').document(phone).set({
                 'first_name': first_name,
@@ -106,7 +106,7 @@ class LoginScreen(Screen):
         
         self.manager.current = "select"
 
-# --- saving to database & to app ---
+# saving to database & to app (log in)
         try:
             user_doc = db.collection('users').document(phone).get()
             if user_doc.exists:
@@ -141,7 +141,7 @@ class LoginScreen(Screen):
             print(f"Error fetching data: {e}")
 
 
-# --- Select screen ---
+# User role/type select
 
 class SelectScreen(Screen):
     def on_worker(self):
@@ -184,7 +184,7 @@ class SelectScreen(Screen):
         except Exception as e:
             print(f"Error saving role: {e}")
 
-# --- Interests screen (Worker flow) ---
+# Interests screen (Worker)
 
 class InterestsScreen(Screen):
     def process_interests(self):
@@ -226,7 +226,7 @@ class InterestsScreen(Screen):
 
         self.manager.current = 'job_screen_1'
 
-# --- Worker Job Screen ---
+# Worker Job Screen 
 
 class JobScreen1(Screen):
     def on_enter(self):
@@ -295,7 +295,7 @@ class JobScreen1(Screen):
             )
             popup.open()
 
-# --- Job Details Screen (for worker) ---
+# Job Details Screen
 
 class JobDetailsScreen(Screen):
     job_data = {}
@@ -360,7 +360,7 @@ class JobDetailsScreen(Screen):
         except Exception as e:
             print(f'Error saving accepted job: {e}')
 
-# --- Employer Job Screen (with add job button) ---
+# Employer Job Screen
 
 class JobScreen2(Screen):
     jobs_posted_this_session = 0
@@ -402,7 +402,7 @@ class JobScreen2(Screen):
                 salary=job.get('salary', 'No Salary')
             )
 
-# --- Editable Job Screen (for employers to add jobs) ---
+# Job List Creation
 
 class EditableJobScreen(Screen):
     jobs_added_this_session = 0 
@@ -453,7 +453,7 @@ class EditableJobScreen(Screen):
 
             self.manager.current = "job_screen"
 
-# --- Pending Screen ---
+# Pending Screen
 class JobBox(BoxLayout):
     job_title = StringProperty("")
     location = StringProperty("")
@@ -463,7 +463,7 @@ class JobBox(BoxLayout):
 
 class PendingJobsScreen(Screen):
     def on_kv_post(self, base_widget):
-        pass  # Don't add anything yet, wait for external trigger
+        pass  
 
     def add_job(self, job_data):
         job_box = JobBox(
@@ -495,10 +495,10 @@ class CombinedApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
         return Builder.load_file("GigSkarte_ver1.kv")
     
-# --- Accepted Job Screen (Pending) --- 
+# Accepted Job Screen 
 class AcceptedJobsScreen(Screen):
     def on_kv_post(self, base_widget):
-        pass  # Wait for external trigger or load accepted jobs here
+        pass
 
     def add_job(self, job_data):
         job_box = JobBox(
