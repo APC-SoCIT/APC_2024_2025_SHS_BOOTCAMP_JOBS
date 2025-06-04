@@ -16,17 +16,6 @@ Window.size = (360, 640)
 
 print(theme_font_styles)
 
-# --- Database ---
-import firebase_admin
-from firebase_admin import credentials, firestore
-
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-# ------------------
-
-
 # --- Auth screens ---
 
 class SignUpScreen(Screen):
@@ -37,12 +26,12 @@ class SignUpScreen(Screen):
         last_name = self.ids.last_name.text.strip()
         phone = self.ids.phone.text.strip()
         email = self.ids.email.text.strip()
+        password = self.ids.password.text.strip()
         birth_month = self.ids.birth_month.text
         birth_day = self.ids.birth_day.text
         birth_year = self.ids.birth_year.text
         
-        
-        if not first_name or not last_name or not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year":
+        if not first_name or not last_name or not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year" or password == "Password":
             print("Please fill all required fields!")
             return
         
@@ -54,16 +43,18 @@ class SignUpScreen(Screen):
         print(f"Phone: {phone}")
         print(f"Email: {email} (optional)")
         print(f"Birthdate: {birthdate}")
+        print(f"Password: {password}")
         
         self.manager.current = "select"
 
-# --- saving to database & to app ---        
+# --- saving to database & to app ---         
         try:
             db.collection('users').document(phone).set({
                 'first_name': first_name,
                 'last_name': last_name,
                 'phone': phone,
                 'email': email,
+                'password': password,
                 'birthdate': birthdate
             })
             print("User signed up and data saved!")
@@ -77,6 +68,7 @@ class SignUpScreen(Screen):
                 'last_name': last_name,
                 'phone': phone,
                 'email': email,
+                'password': password,
                 'birthdate': birthdate
             }
 
@@ -89,11 +81,12 @@ class SignUpScreen(Screen):
 class LoginScreen(Screen):
     def login(self):
         phone = self.ids.phone.text.strip()
+        password = self.ids.password.text.strip()
         birth_month = self.ids.birth_month.text
         birth_day = self.ids.birth_day.text
         birth_year = self.ids.birth_year.text
         
-        if not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year":
+        if not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year" or password == "Password":
             print("Please fill all required fields!")
             return
         
@@ -102,6 +95,7 @@ class LoginScreen(Screen):
         print("Logged In:")
         print(f"Phone: {phone}")
         print(f"Birthdate: {birthdate}")
+        print(f"Password: {password}")
         
         self.manager.current = "select"
 
@@ -110,7 +104,7 @@ class LoginScreen(Screen):
             user_doc = db.collection('users').document(phone).get()
             if user_doc.exists:
                 user_data = user_doc.to_dict()
-                if user_data.get('birthdate') == birthdate:
+                if user_data.get('birthdate') == birthdate and user_data_get('password') == password:
                     print("User logged in successfully!")
 
                     app = MDApp.get_running_app()
@@ -118,7 +112,7 @@ class LoginScreen(Screen):
 
                     self.manager.current = "select"
                 else:
-                    print("Birthdate mismatch! Check your input.")
+                    print("Incorrect birthdate or password.")
             else:
                 print("User not found. Please sign up first.")
         except Exception as e:
