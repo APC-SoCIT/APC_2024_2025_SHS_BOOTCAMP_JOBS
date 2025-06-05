@@ -21,7 +21,7 @@ ScreenManager:
     EditableJobScreen:
         name: "editable_screen"
     PendingJobsScreen:
-        name: "pending_screen"
+        name: "pending_jobs"
 
 <SignUpScreen>:
     name: "signup"
@@ -661,61 +661,61 @@ ScreenManager:
         size_hint_y: None
         height: 160
 
-        Label:
+        MDLabel:
             text: "[b]Job Title:[/b]"
             markup: True
             halign: "left"
             valign: "middle"
             text_size: self.size
-        Label:
+        MDLabel:
             text: root.job_title
             halign: "right"
             valign: "middle"
             text_size: self.size
 
-        Label:
+        MDLabel:
             text: "[b]Location:[/b]"
             markup: True
             halign: "left"
             valign: "middle"
             text_size: self.size
-        Label:
+        MDLabel:
             text: root.location
             halign: "right"
             valign: "middle"
             text_size: self.size
 
-        Label:
+        MDLabel:
             text: "[b]Salary:[/b]"
             markup: True
             halign: "left"
             valign: "middle"
             text_size: self.size
-        Label:
+        MDLabel:
             text: root.salary
             halign: "right"
             valign: "middle"
             text_size: self.size
 
-        Label:
+        MDLabel:
             text: "[b]Date & Time:[/b]"
             markup: True
             halign: "left"
             valign: "middle"
             text_size: self.size
-        Label:
+        MDLabel:
             text: root.date_time
             halign: "right"
             valign: "middle"
             text_size: self.size
 
-        Label:
-            text: "[b]Status:[/b]"
+        MDLabel:
+            text: "[b]Status:[/b]" + root.status
             markup: True
-            halign: "left"
+            halign: "right"
             valign: "middle"
             text_size: self.size
-        Label:
+        MDLabel:
             text: ""
             halign: "right"
             valign: "middle"
@@ -723,7 +723,7 @@ ScreenManager:
 
 <PendingJobsScreen>:
     name: "pending_jobs"
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
         padding: 10
         spacing: 10
@@ -734,7 +734,7 @@ ScreenManager:
                 pos: self.pos
                 size: self.size
 
-        BoxLayout:
+        MDBoxLayout:
             size_hint_y: None
             height: 50
             padding: 5
@@ -748,7 +748,7 @@ ScreenManager:
                 width: 50
                 on_press: root.go_back()
 
-        Label:
+        MDLabel:
             text: "[b]PENDING JOBS[/b]"
             markup: True
             font_size: 24
@@ -770,7 +770,7 @@ ScreenManager:
 
 <AcceptedJobsScreen>:
     name: "accepted_jobs"
-    BoxLayout:
+    MDTopAppBarLeadingButtonContainerBoxLayout:
         orientation: 'vertical'
         padding: 10
         spacing: 10
@@ -781,7 +781,7 @@ ScreenManager:
                 pos: self.pos
                 size: self.size
 
-        BoxLayout:
+        MDBoxLayout:
             size_hint_y: None
             height: 50
             padding: 5
@@ -795,7 +795,7 @@ ScreenManager:
                 width: 50
                 on_press: root.go_back()
 
-        Label:
+        MDLabel:
             text: "[b]ACCEPTED JOBS[/b]"
             markup: True
             font_size: 24
@@ -807,7 +807,7 @@ ScreenManager:
             text_size: self.size
 
         ScrollView:
-            BoxLayout:
+            MDBoxLayout:
                 id: job_list
                 orientation: 'vertical'
                 spacing: 15
