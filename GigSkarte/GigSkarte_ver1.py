@@ -18,6 +18,11 @@ from kivy.properties import StringProperty
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
 
+# --- Database ---
+
+
+
+# ------------------
 
 Window.size = (360, 640)
 
@@ -299,8 +304,9 @@ class JobScreen1(Screen):
 
 class JobDetailsScreen(Screen):
     job_data = {}
-    jobs_viewed = 0
-    jobs_accepted = 0
+
+    def set_job_details(self, job_data):
+        self.job_data = job_data
 
     def on_pre_enter(self):
         self.ids.job_title.text = f"Job: {self.job_data.get('title', '')}"
@@ -308,57 +314,27 @@ class JobDetailsScreen(Screen):
         self.ids.job_time.text = f"Date & Time: {self.job_data.get('time', '')}"
         self.ids.job_salary.text = f"Salary: ₱{self.job_data.get('salary', '')}"
 
-        JobDetailsScreen.jobs_viewed += 1
-        print(f"Viewed Jobs this session: {JobDetailsScreen.jobs_viewed}")
-
-    def set_job_details(self, job_data):
-        self.job_data = job_data
-        self.ids.job_title_label.text = job_data.get('title', 'No Title')
-        self.ids.location_label.text = job_data.get('location', 'No Location')
-        self.ids.time_label.text = job_data.get('time', 'No Time')
-        self.ids.salary_label.text = job_data.get('salary', 'No Salary')
-
     def accept_job(self):
-        pending_screen = self.manager.get_screen('pending_jobs')
-        pending_screen.add_job(self.job_data)
-        self.manager.current = 'pending_jobs'
-        JobDetailsScreen.jobs_accepted += 1
-        print(f"Accepted Jobs this session: {JobDetailsScreen.jobs_accepted}")
+        job_id = self.job_data.get('id')
+        user_id = current_user.get('uid')
 
-        try:
-            app = MDApp.get_running_app()
-            user_id = None
-            if hasattr(app, 'session') and 'user' in app.session:
-                user_id = app.session['user'].get('phone')
-            elif hasattr(app, 'current_user'):
-                user_id = app.current_user.get('phone')
 
-            if not user_id:
-                print("User ID not found in session or current_user!")
-                return
+        db.collection("jobs").document(job_id).update({
+            "status": "accepted",
+            "accepted_by": user_id
+        })
 
-            accepted_job = {
-                'title': self.job_data.get('title', ''),
-                'location': self.job_data.get('location', ''),
-                'time': self.job_data.get('time', ''),
-                'salary': self.job_data.get('salary', '')
-            }
+        db.collection("users").document(user_id).collection("accepted_jobs").add({
+            "job_id": job_id,
+            "timestamp": firestore.SERVER_TIMESTAMP
+        })
 
-            db.collection('users').document(user_id).update({
-                'accepted_jobs': firestore.ArrayUnion([accepted_job])
-            })
-
-            print("Accepted job saved to Firestore!")
-
-            popup = Popup(
-                title='Job Accepted',
-                content=Label(text='You have accepted the job offer.'),
-                size_hint=(0.6, 0.4)
-            )
-            popup.open()
-
-        except Exception as e:
-            print(f'Error saving accepted job: {e}')
+        popup = Popup(
+            title='Job Accepted',
+            content=Label(text='You have accepted the job offer.'),
+            size_hint=(0.6, 0.4)
+        )
+        popup.open()
 
 # --- Employer Job Screen (with add job button) ---
 
