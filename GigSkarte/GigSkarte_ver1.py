@@ -18,11 +18,11 @@ from kivy.properties import StringProperty
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
 
-# --- Database ---
+# Database 
 
 
 
-# ------------------
+# 
 
 Window.size = (360, 640)
 
