@@ -252,6 +252,8 @@ class JobScreen1(Screen):
 
             for job in jobs:
                 job_data = job.to_dict()
+                job_data['id'] = job.id
+                
                 job_count += 1
 
                 title = job_data.get('title', 'No title')
@@ -316,25 +318,39 @@ class JobDetailsScreen(Screen):
 
     def accept_job(self):
         job_id = self.job_data.get('id')
-        user_id = current_user.get('uid')
 
+        if not job_id:
+            print("Error: job_id is missing. Cannot accept job.")
+            return
+        
+        app = MDApp.get_running_app()
+        user_id = app.current_user.get('phone')
 
-        db.collection("jobs").document(job_id).update({
+        if user_id is None:
+            print("User ID not found!")
+            return
+
+        try:
+            db.collection("jobs").document(job_id).update({
             "status": "accepted",
             "accepted_by": user_id
         })
 
-        db.collection("users").document(user_id).collection("accepted_jobs").add({
-            "job_id": job_id,
-            "timestamp": firestore.SERVER_TIMESTAMP
-        })
+            db.collection("users").document(user_id).collection("accepted_jobs").add({
+                "job_id": job_id,
+                "timestamp": firestore.SERVER_TIMESTAMP
+            })
 
-        popup = Popup(
-            title='Job Accepted',
-            content=Label(text='You have accepted the job offer.'),
-            size_hint=(0.6, 0.4)
-        )
-        popup.open()
+            popup = Popup(
+                title='Job Accepted',
+                content=Label(text='You have accepted the job offer.'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
+
+            self.manager.current = 'pending_jobs'
+        except Exception as e:
+            print(f"Error accepting job {e}")
 
 # Employer Job Screen
 
@@ -435,21 +451,68 @@ class JobBox(BoxLayout):
     location = StringProperty("")
     salary = StringProperty("")
     date_time = StringProperty("")
+    status = StringProperty("Ongoing")
+    job_id = StringProperty("")
 
+    def complete_job(self):
+        app = MDApp.get_running_app()
+        try:
+            db.collection("jobs").document(self.job_id).update({
+                "status": "completed"
+            })
+            popup.open()
+            screens = app.root.ids
+            pending_screen = app.root.get_screen('pending_jobs')
+            pending_screen.load_pending_jobs()
+        except Exception as e:
+            popup = Popup(
+                title='Error',
+                content=Label(text=f'Could not update job status: {e}'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
 
 class PendingJobsScreen(Screen):
     def on_kv_post(self, base_widget):
-        pass  
+        self.load_pending_jobs()
+        
+    def on_enter(self):
+        self.load_pending_jobs()
+
+    def load_pending_jobs(self):
+        self.clear_jobs()
+        app = MDApp.get_running_app()
+        user_id = app.current_user.get('phone') if app.current_user else None
+        if not user_id:
+            print("No current user found for loading pending jobs.")
+            return
+        
+        try:
+            jobs_ref = db.collection('jobs')
+            query = jobs_ref.where('status', '==', 'accepted').where('accepted_by', '==', user_id)
+            docs = query.stream()
+            any_jobs = False
+            for doc in docs:
+                job_data = doc.to_dict()
+                job_data['id'] = doc.id
+                job_data['status'] = "Ongoing" 
+                self.add_job(job_data)
+                any_jobs = True
+            
+            if not any_jobs:
+                print("No pending jobs found.")
+        except Exception as e:
+            print(f"Error loading pending jobs: {e}")
 
     def add_job(self, job_data):
+        print(f"Adding job to UI: {job_data}") 
         job_box = JobBox(
-            text=f"{job_data.get('title')} - {job_data.get('location')}- {job_data.get('time')} - {job_data.get('salary')}",
-            size_hint_y=None,
-            height=dp(40),
-            job_title=job_data["title"],
-            location=job_data["location"],
-            salary=job_data["salary"],
-            date_time=job_data["date_time"]
+            job_title=job_data.get("title", "No title"),
+            location=job_data.get("location", "No location"),
+            salary=job_data.get("salary", "No salary"),
+            date_time=job_data.get("time", "No time"),
+            status=job_data.get("status", "Ongoing"),
+            job_id=job_data.get('id', "")
         )
         self.ids.job_list.add_widget(job_box)
 
@@ -457,19 +520,7 @@ class PendingJobsScreen(Screen):
         self.ids.job_list.clear_widgets()
 
     def go_back(self):
-        App.get_running_app().stop()
-
-class CombinedApp(MDApp):
-    current_user = None
-    def build(self):
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            self.session = {}
-
-    def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Blue"
-        return Builder.load_file("GigSkarte_ver1.kv")
+        self.manager.current = "job_screen_1"
     
 # Accepted Job Screen 
 class AcceptedJobsScreen(Screen):
@@ -490,6 +541,18 @@ class AcceptedJobsScreen(Screen):
 
     def go_back(self):
         App.get_running_app().stop() 
+
+class CombinedApp(MDApp):
+    current_user = None
+    def build(self):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.session = {}
+
+    def build(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Blue"
+        return Builder.load_file("GigSkarte_ver1.kv")
 
 
 if __name__ == '__main__':
