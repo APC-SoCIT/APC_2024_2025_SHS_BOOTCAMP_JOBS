@@ -32,7 +32,7 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
         padding: "40dp"
         spacing: "20dp"
@@ -410,15 +410,6 @@ ScreenManager:
             size_hint_y: None
             height: dp(40)
 
-        Spinner:
-            id: spinner_id
-            text: "Filter"
-            values: ["Location", "Salary", "Time"]
-            size_hint: (None, None)
-            size: dp(120), dp(40)
-            pos_hint: {"center_x": 0.5}
-            on_text: root.spinner_clicked(spinner_id.text)
-
         ScrollView:
             GridLayout:
                 id: job_grid_1
@@ -439,19 +430,6 @@ ScreenManager:
             size_hint_y: None
             height: dp(50)
             padding: 10
-
-        
-        Spinner:
-            id: spinner_id
-            text: "Select Job"
-            values: ["Cleaning", "Moving", "Laundry", "Pet Sitting", "Errands", "Babysitting"]
-            on_text: root.spinner_clicked(self.text)
-
-        Button:
-            text: "View Job Details"
-            size_hint_y: None
-            height: dp(50)
-            on_release: root.show_job_details()
 
 <JobDetailsScreen>:
     MDBoxLayout:
