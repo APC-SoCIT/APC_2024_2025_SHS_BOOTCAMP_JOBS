@@ -267,7 +267,6 @@ class JobScreen1(Screen):
                     style="outlined",
                     orientation="vertical",
                     padding=dp(10),
-                    size_hint=(0.45, None), 
                     size=(self.ids.job_grid_1.width / 2 - dp(20), dp(150)),
                     ripple_behavior=True,
                 )
