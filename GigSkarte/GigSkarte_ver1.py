@@ -24,7 +24,7 @@ from kivy.core.window import Window
 
 # ------------------
 
-Window.size = (360, 640)
+Window.size = (360, 740)
 
 print(theme_font_styles)
 
