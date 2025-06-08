@@ -22,6 +22,8 @@ ScreenManager:
         name: "editable_screen"
     PendingJobsScreen:
         name: "pending_jobs"
+    AcceptedJobsScreen:
+        name: "accepted_jobs"
 
 <SignUpScreen>:
     name: "signup"
@@ -634,7 +636,7 @@ ScreenManager:
     height: 180
     canvas.before:
         Color:
-            rgba: 1, 0, 0, 1
+            rgba: 0.87, 0.22, 0.27, 1
         RoundedRectangle:
             pos: self.pos
             size: self.size
@@ -754,7 +756,7 @@ ScreenManager:
 
 <AcceptedJobsScreen>:
     name: "accepted_jobs"
-    MDTopAppBarLeadingButtonContainerBoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
         padding: 10
         spacing: 10
