@@ -550,8 +550,6 @@ class CombinedApp(MDApp):
             self.session = {}
 
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Blue"
         return Builder.load_file("GigSkarte_ver1.kv")
 
 
