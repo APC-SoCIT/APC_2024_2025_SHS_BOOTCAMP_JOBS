@@ -18,10 +18,11 @@ from kivy.properties import StringProperty
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
 
-# --- Database ---
+# Database 
 
 
-# ------------------
+
+# 
 
 Window.size = (360, 640)
 
@@ -597,8 +598,6 @@ class CombinedApp(MDApp):
             self.session = {}
 
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Blue"
         return Builder.load_file("GigSkarte_ver1.kv")
 
 

@@ -34,10 +34,16 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
         padding: "40dp"
-        spacing: "20dp"
+        spacing: "12dp"
+
+        Image:
+            source: "logo1.png"
+            size_hint_y: None
+            height: "160dp"
+            pos_hint: {"center_x": 0.5}
 
         MDLabel:
             text: "[b]GigSkarte[/b]"
@@ -156,15 +162,16 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
         padding: "40dp"
         spacing: "20dp"
 
-        MDLabel:
-            text: "[b]GigSkarte[/b]"
-            markup: True
-            halign: "center"
+        Image:
+            source: "logo1.png"
+            size_hint_y: None
+            height: "160dp"
+            pos_hint: {"center_x": 0.5}
 
         MDLabel:
             text: "Login to your account"
