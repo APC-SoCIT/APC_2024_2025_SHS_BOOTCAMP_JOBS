@@ -22,6 +22,8 @@ ScreenManager:
         name: "editable_screen"
     PendingJobsScreen:
         name: "pending_jobs"
+    AcceptedJobsScreen:
+        name: "accepted_jobs"
 
 <SignUpScreen>:
     name: "signup"
@@ -410,15 +412,6 @@ ScreenManager:
             size_hint_y: None
             height: dp(40)
 
-        Spinner:
-            id: spinner_id
-            text: "Filter"
-            values: ["Location", "Salary", "Time"]
-            size_hint: (None, None)
-            size: dp(120), dp(40)
-            pos_hint: {"center_x": 0.5}
-            on_text: root.spinner_clicked(spinner_id.text)
-
         ScrollView:
             GridLayout:
                 id: job_grid_1
@@ -439,19 +432,6 @@ ScreenManager:
             size_hint_y: None
             height: dp(50)
             padding: 10
-
-        
-        Spinner:
-            id: spinner_id
-            text: "Select Job"
-            values: ["Cleaning", "Moving", "Laundry", "Pet Sitting", "Errands", "Babysitting"]
-            on_text: root.spinner_clicked(self.text)
-
-        Button:
-            text: "View Job Details"
-            size_hint_y: None
-            height: dp(50)
-            on_release: root.show_job_details()
 
 <JobDetailsScreen>:
     MDBoxLayout:
@@ -650,7 +630,7 @@ ScreenManager:
     height: 180
     canvas.before:
         Color:
-            rgba: 1, 0, 0, 1
+            rgba: 0.87, 0.22, 0.27, 1
         RoundedRectangle:
             pos: self.pos
             size: self.size
@@ -770,7 +750,7 @@ ScreenManager:
 
 <AcceptedJobsScreen>:
     name: "accepted_jobs"
-    MDTopAppBarLeadingButtonContainerBoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
         padding: 10
         spacing: 10

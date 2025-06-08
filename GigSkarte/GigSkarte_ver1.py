@@ -1,5 +1,5 @@
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition   
 from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
@@ -31,7 +31,7 @@ print(theme_font_styles)
 
 class SignUpScreen(Screen):
     def login(self):
-        self.manager.current = "login" 
+        self.manager.current = "login"  
     def sign_up(self):
         first_name = self.ids.first_name.text.strip()
         last_name = self.ids.last_name.text.strip()
@@ -97,7 +97,7 @@ class LoginScreen(Screen):
         birth_day = self.ids.birth_day.text
         birth_year = self.ids.birth_year.text
         
-        if not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year" or password == "Password":
+        if not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year" or password == "Password": 
             print("Please fill all required fields!")
             return
         
@@ -355,8 +355,10 @@ class JobDetailsScreen(Screen):
 
 class JobScreen2(Screen):
     jobs_posted_this_session = 0
+    def on_enter(self):
+        self.load_jobs_from_db()
 
-    def add_card(self, job_title, location, time, salary):
+    def add_card(self, job_title, location, time, salary, job_id):
         text = f"{job_title}\nLocation: {location}\nTime: {time}\nSalary: {salary}"
         card = MDCard(
             style="filled",
@@ -373,10 +375,20 @@ class JobScreen2(Screen):
             valign="middle",
             text_size=(card.width - dp(20), None)
         ))
+
+        card.bind(on_touch_down=lambda instance, touch, job_id=job_id: self.on_card_touch(instance, touch, job_id))
+
         self.ids.job_grid.add_widget(card)
 
         JobScreen2.jobs_posted_this_session += 1
         print(f"Jobs Posted This Session: {JobScreen2.jobs_posted_this_session}")
+
+    def on_card_touch(self, instance, touch, job_id):
+        if instance.collide_point(*touch.pos):
+            print("Card touched, switching to accepted jobs")
+            app = MDApp.get_running_app()
+            app.current_job_id = job_id
+            self.manager.current = 'accepted_jobs' 
 
     def load_jobs_from_db(self):
         self.ids.job_grid.clear_widgets()
@@ -390,7 +402,8 @@ class JobScreen2(Screen):
                 job_title=job.get('job_title', 'No Title'),
                 location=job.get('location', 'No Location'),
                 time=job.get('time', 'No Time'),
-                salary=job.get('salary', 'No Salary')
+                salary=job.get('salary', 'No Salary'),
+                job_id=doc.id
             )
 
 # Job List Creation
@@ -523,23 +536,58 @@ class PendingJobsScreen(Screen):
     
 # Accepted Job Screen 
 class AcceptedJobsScreen(Screen):
+    def on_enter(self):
+        self.load_accepted_jobs()
+
+    def clear_jobs(self):
+        self.ids.job_list.clear_widgets()
+
     def on_kv_post(self, base_widget):
         pass
 
     def add_job(self, job_data):
         job_box = JobBox(
-            job_title=job_data["title"],
-            location=job_data["location"],
-            salary=job_data["salary"],
-            date_time=job_data["date_time"]
+            job_title=job_data.get("title", "No title"),
+            location=job_data.get("location", "No location"),
+            salary=str(job_data.get("salary", "No salary")),
+            date_time=job_data.get("time", "No time"),
+            status=job_data.get("status", "Accepted"),
+            job_id=job_data.get("id", "")
         )
         self.ids.job_list.add_widget(job_box)
 
-    def clear_jobs(self):
-        self.ids.job_list.clear_widgets()
+    def load_accepted_jobs(self):
+        self.clear_jobs()
+        app = MDApp.get_running_app()
+        user_id = app.current_user.get('phone') if app.current_user else None
+        if not user_id:
+            print("No current user found for loading accepted jobs.")
+            return
+    
+        try:
+            jobs_ref = firestore.client().collection('jobs')
+            query = jobs_ref.where('status', '==', 'accepted').where('creator_id', '==', user_id)
+            docs = query.stream()
+            any_jobs = False
+            for doc in docs:
+                job_data = doc.to_dict()
+                job_data['id'] = doc.id
+                self.add_job(job_data)
+                any_jobs = True
+            if not any_jobs:
+                print("No accepted jobs found.")
+        except Exception as e:
+            popup = Popup(
+                title='Database Error',
+                content=Label(text=f'Failed to load accepted jobs: {e}'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
+    def go_back(self):
+        self.manager.current = "job_screen"
 
     def go_back(self):
-        App.get_running_app().stop() 
+        self.manager.current = "job_screen"
 
 class CombinedApp(MDApp):
     current_user = None
