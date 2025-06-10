@@ -24,7 +24,7 @@ from kivy.core.window import Window
 
 # ------------------
 
-Window.size = (360, 740)
+Window.size = (380, 740)
 
 print(theme_font_styles)
 
@@ -268,8 +268,7 @@ class JobScreen1(Screen):
                     orientation="vertical",
                     padding=dp(10),
                     size_hint=(0.45, None), 
-                    height=dp(100),
-                    size=(self.ids.job_grid_1.width / 2 - dp(15), dp(100)),
+                    size=(self.ids.job_grid_1.width / 2 - dp(20), dp(130)),
                     ripple_behavior=True,
                 )
                 card.add_widget(MDLabel(
@@ -315,6 +314,7 @@ class JobDetailsScreen(Screen):
         self.ids.job_location.text = f"Location: {self.job_data.get('location', '')}"
         self.ids.job_time.text = f"Date & Time: {self.job_data.get('time', '')}"
         self.ids.job_salary.text = f"Salary: ₱{self.job_data.get('salary', '')}"
+        self.ids.job_number.text = f"Phone Number: {self.job_data.get('number', '')}"
 
     def accept_job(self):
         job_id = self.job_data.get('id')
@@ -366,7 +366,7 @@ class JobScreen2(Screen):
             orientation="vertical",
             padding=dp(10),
             size_hint=(None, None),
-            size=(self.ids.job_grid.width / 2 - dp(20), dp(100)),
+            size=(self.ids.job_grid.width / 2 - dp(20), dp(130)),
             ripple_behavior=True,
             md_bg_color=get_color_from_hex('DD3846')
         )
@@ -400,14 +400,14 @@ class JobScreen2(Screen):
         for doc in docs:
             job = doc.to_dict()
             self.add_card(
-                job_title=job.get('job_title', 'No Title'),
+                job_title=job.get('title', 'No Title'),
                 location=job.get('location', 'No Location'),
                 time=job.get('time', 'No Time'),
                 salary=job.get('salary', 'No Salary'),
                 job_id=doc.id
             )
 
-# Job List Creation
+# Job List Creation Screen
 
 class EditableJobScreen(Screen):
     jobs_added_this_session = 0 
@@ -418,34 +418,44 @@ class EditableJobScreen(Screen):
         time = self.ids.edit_time.text.strip()
         salary = self.ids.edit_salary.text.strip()
 
-        if title and location and time and salary:
-            job_data = {
-                "title": title,
-                "location": location,
-                "time": time,
-                "salary": salary,
-            }
+        if not title or not location or not time or not salary:
+            popup = Popup(
+                title='Validation Error',
+                content=Label(text='Please fill in all job details.'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
+            return
 
-            try:
-                db.collection('jobs').add(job_data)
-            except Exception as e:
-                popup = Popup(
-                    title='Database Error',
-                    content=Label(text=f'Failed to save job: {e}'),
-                    size_hint=(0.6, 0.4)
-                )
-                popup.open()
-                return
+        app = MDApp.get_running_app()
+        user_id = app.current_user.get('phone') if app.current_user else None
 
-            job_screen = self.manager.get_screen('job_screen')
-            job_screen.load_jobs_from_db()
+        if not user_id:
+            popup = Popup(
+                title='User Error',
+                content=Label(text='User not logged in. Cannot create job.'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
+            return
+
+        job_data = {
+            "title": title,
+            "location": location,
+            "time": time,
+            "salary": salary,
+            "phone_number": user_id,
+            "creator_id": user_id
+        }
+
+        try:
+            db.collection('jobs').add(job_data)
 
             self.ids.edit_title.text = ""
             self.ids.edit_location.text = ""
             self.ids.edit_time.text = ""
             self.ids.edit_salary.text = ""
 
-            
             EditableJobScreen.jobs_added_this_session += 1
             print(f"Jobs Added This Session: {EditableJobScreen.jobs_added_this_session}")
 
@@ -458,7 +468,16 @@ class EditableJobScreen(Screen):
 
             self.manager.current = "job_screen"
 
-# Pending Screen
+        except Exception as e:
+            popup = Popup(
+                title='Database Error',
+                content=Label(text=f'Failed to save job: {e}'),
+                size_hint=(0.6, 0.4)
+            )
+            popup.open()
+
+# Pending Screen (Worker)
+
 class JobBox(BoxLayout):
     job_title = StringProperty("")
     location = StringProperty("")
@@ -466,6 +485,7 @@ class JobBox(BoxLayout):
     date_time = StringProperty("")
     status = StringProperty("Ongoing")
     job_id = StringProperty("")
+    job_number = StringProperty("")
 
     def complete_job(self):
         app = MDApp.get_running_app()
@@ -473,8 +493,13 @@ class JobBox(BoxLayout):
             db.collection("jobs").document(self.job_id).update({
                 "status": "completed"
             })
+            popup = Popup(
+                title='Success',
+                content=Label(text='Job marked as completed!'),
+                size_hint=(0.6, 0.4)
+            )
             popup.open()
-            screens = app.root.ids
+
             pending_screen = app.root.get_screen('pending_jobs')
             pending_screen.load_pending_jobs()
         except Exception as e:
@@ -486,6 +511,14 @@ class JobBox(BoxLayout):
             popup.open()
 
 class PendingJobsScreen(Screen):
+    def delete_job(self, job_id):
+        try:
+            db.collection('jobs').document(job_id).delete()
+            print(f"Job {job_id} deleted successfully!")
+            self.load_jobs()  
+        except Exception as e:
+            print(f"Failed to delete job: {e}")
+
     def on_kv_post(self, base_widget):
         self.load_pending_jobs()
         
@@ -501,7 +534,7 @@ class PendingJobsScreen(Screen):
             return
         
         try:
-            jobs_ref = db.collection('jobs')
+            jobs_ref = db.collection('jobs')    
             query = jobs_ref.where('status', '==', 'accepted').where('accepted_by', '==', user_id)
             docs = query.stream()
             any_jobs = False
@@ -524,6 +557,7 @@ class PendingJobsScreen(Screen):
             location=job_data.get("location", "No location"),
             salary=job_data.get("salary", "No salary"),
             date_time=job_data.get("time", "No time"),
+            job_number=job_data.get("phone_number", "No number"),
             status=job_data.get("status", "Ongoing"),
             job_id=job_data.get('id', "")
         )
@@ -535,57 +569,103 @@ class PendingJobsScreen(Screen):
     def go_back(self):
         self.manager.current = "job_screen_1"
     
-# Accepted Job Screen 
+# Accepted Job Screen (Employer)
 class AcceptedJobsScreen(Screen):
     def on_enter(self):
+
         self.load_accepted_jobs()
 
     def clear_jobs(self):
+
         self.ids.job_list.clear_widgets()
 
-    def on_kv_post(self, base_widget):
-        pass
-
     def add_job(self, job_data):
+
+        class JobBox(BoxLayout):
+            job_title = StringProperty("")
+            location = StringProperty("")
+            salary = StringProperty("")
+            date_time = StringProperty("")
+            status = StringProperty("Accepted")
+            job_number= StringProperty("")
+            job_id = StringProperty("")
+
         job_box = JobBox(
-            job_title=job_data.get("title", "No title"),
-            location=job_data.get("location", "No location"),
-            salary=str(job_data.get("salary", "No salary")),
-            date_time=job_data.get("time", "No time"),
-            status=job_data.get("status", "Accepted"),
-            job_id=job_data.get("id", "")
+            job_title=job_data.get("title") or "No title",
+            location=job_data.get("location") or "No location",
+            salary=str(job_data.get("salary") or "No salary"),
+            date_time=job_data.get("time") or "No time",
+            job_number=job_data.get("phone_number", "No number"),
+            status=job_data.get("status") or "Accepted",
+
+            job_id=job_data.get("id") or ""
         )
         self.ids.job_list.add_widget(job_box)
 
     def load_accepted_jobs(self):
+        """Query Firestore and load accepted jobs for the logged-in employer."""
         self.clear_jobs()
         app = MDApp.get_running_app()
-        user_id = app.current_user.get('phone') if app.current_user else None
+        user_id = None      
+        try:
+            user_id = app.current_user.get('phone')
+        except Exception as e:
+            print(f"[AcceptedJobsScreen] Failed to get current user id: {e}")
+
+        print(f"[AcceptedJobsScreen] Loading accepted jobs for user_id: {user_id}")
+
         if not user_id:
-            print("No current user found for loading accepted jobs.")
+            print("[AcceptedJobsScreen] No logged in employer user ID found.")
+            label = MDLabel(
+                text="Please log in to view accepted jobs.",
+                halign="center",
+                theme_text_color="Hint",
+                font_style="Subtitle1",
+                size_hint_y=None,
+                height=dp(50)
+            )
+            self.ids.job_list.add_widget(label)
             return
-    
+
         try:
             jobs_ref = firestore.client().collection('jobs')
-            query = jobs_ref.where('status', '==', 'accepted').where('creator_id', '==', user_id)
-            docs = query.stream()
+
+            query_1 = jobs_ref.where('status', '==', 'accepted').where('creator_id', '==', user_id)
+            query_2 = jobs_ref.where('status', '==', 'accepted').where('creator_id', '==', 'fallback_user')
+
+            docs_1 = list(query_1.stream())
+            docs_2 = list(query_2.stream())
+
+            total_docs = docs_1 + docs_2
             any_jobs = False
-            for doc in docs:
+
+            for doc in total_docs:
                 job_data = doc.to_dict()
+                print(f"[AcceptedJobsScreen] Job loaded: {job_data}")
                 job_data['id'] = doc.id
                 self.add_job(job_data)
                 any_jobs = True
+
             if not any_jobs:
-                print("No accepted jobs found.")
+                print("[AcceptedJobsScreen] No accepted jobs found for employer.")
+                label = MDLabel(
+                    text="No accepted jobs found.",
+                    halign="center",
+                    theme_text_color="Hint",
+                    font_style="Subtitle1",
+                    size_hint_y=None,
+                    height=dp(50)
+                )
+                self.ids.job_list.add_widget(label)
+
         except Exception as e:
+            print(f"[AcceptedJobsScreen] Error loading accepted jobs: {e}")
             popup = Popup(
                 title='Database Error',
                 content=Label(text=f'Failed to load accepted jobs: {e}'),
                 size_hint=(0.6, 0.4)
             )
             popup.open()
-    def go_back(self):
-        self.manager.current = "job_screen"
 
     def go_back(self):
         self.manager.current = "job_screen"
@@ -593,15 +673,7 @@ class AcceptedJobsScreen(Screen):
 class CombinedApp(MDApp):
     current_user = None
     def build(self):
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            self.session = {}
-
-    def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Blue"
         return Builder.load_file("GigSkarte_ver1.kv")
-
 
 if __name__ == '__main__':
     CombinedApp().run()
