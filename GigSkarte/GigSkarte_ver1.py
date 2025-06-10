@@ -268,14 +268,15 @@ class JobScreen1(Screen):
                     orientation="vertical",
                     padding=dp(10),
                     size_hint=(0.45, None), 
-                    size=(self.ids.job_grid_1.width / 2 - dp(20), dp(130)),
+                    height=dp(100),
+                    size=(self.ids.job_grid_1.width / 2 - dp(15), dp(100)),
                     ripple_behavior=True,
                 )
                 card.add_widget(MDLabel(
                     text=text,
                     halign="center",
                     valign="middle",
-                    text_size=(card.width - dp(20), None)
+                    text_size=(card.width - dp(20), card.height - dp(100))
                 ))
 
                 def on_card_touch(instance, touch, job_data=job_data):
