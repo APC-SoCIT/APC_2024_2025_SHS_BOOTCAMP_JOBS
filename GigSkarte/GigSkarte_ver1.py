@@ -14,6 +14,9 @@ from kivy.graphics import Color, RoundedRectangle
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.button import Button
 from kivy.properties import StringProperty
+from datetime import datetime
+from kivy.metrics import dp, sp
+from kivy.core.text import Label as CoreLabel
 
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
@@ -31,8 +34,20 @@ print(theme_font_styles)
 # Authentication
 
 class SignUpScreen(Screen):
+    def __init__(self, **kwargs):
+        super(SignUpScreen, self).__init__(**kwargs)
+        self.year_list = self.generate_years()
+
+    def generate_years(self):
+        current_year = datetime.now().year
+        return [str(year) for year in range(current_year, 1969, -1)]
+    
+    def on_kv_post(self, base_widge):
+        self.ids.birth_year.values = self.year_list
+
+
     def login(self):
-        self.manager.current = "login"  
+        self.manager.current = "login"
     def sign_up(self):
         first_name = self.ids.first_name.text.strip()
         last_name = self.ids.last_name.text.strip()
@@ -88,7 +103,6 @@ class SignUpScreen(Screen):
 
         except Exception as e:
             print(f"Error saving data: {e}")
-
 
 class LoginScreen(Screen):
     def login(self):
@@ -235,7 +249,6 @@ class JobScreen1(Screen):
         self.total_jobs_loaded = 0 
         self.load_jobs_from_db()
     
-
     def load_jobs_from_db(self):
         self.ids.job_grid_1.clear_widgets()
 
@@ -255,21 +268,24 @@ class JobScreen1(Screen):
                 location = job_data.get('location', 'No location')
                 time = job_data.get('time', 'No time')
                 salary = job_data.get('salary', 'No salary')
-
+        
                 text = f"{title}\nLocation: {location}\nTime: {time}\nSalary: {salary}"
 
                 card = MDCard(
                     style="outlined",
                     orientation="vertical",
                     padding=dp(10),
-                    size=(self.ids.job_grid_1.width / 2 - dp(20), dp(150)),
+                    size_hint=(0.45, None), 
+                    height=dp(120),
                     ripple_behavior=True,
                 )
                 card.add_widget(MDLabel(
                     text=text,
                     halign="center",
                     valign="middle",
-                    text_size=(card.width - dp(20), card.height - dp(100))
+                    text_size=(card.width - dp(20), None), 
+                    size_hint_y=(1, None),
+                    height=self.get_label_height(text) 
                 ))
 
                 def on_card_touch(instance, touch, job_data=job_data):
@@ -295,6 +311,12 @@ class JobScreen1(Screen):
             )
             popup.open()
 
+    def get_label_height(self, text):
+        label = CoreLabel(text=text, font_size=sp(14), halign='center', valign='middle', text_size=(self.ids.job_grid_1.width * 0.45 - dp(20), None))
+        label.refresh()
+        return label.texture.size[1] + dp(10) 
+
+
 # Job Details Screen
 
 class JobDetailsScreen(Screen):
@@ -308,7 +330,8 @@ class JobDetailsScreen(Screen):
         self.ids.job_location.text = f"Location: {self.job_data.get('location', '')}"
         self.ids.job_time.text = f"Date & Time: {self.job_data.get('time', '')}"
         self.ids.job_salary.text = f"Salary: ₱{self.job_data.get('salary', '')}"
-        self.ids.job_number.text = f"Phone Number: {self.job_data.get('number', '')}"
+        self.ids.job_number.text = f"Phone Number: {self.job_data.get('phone_number', '')}"
+        self.ids.job_employer.text = f"Employer: {self.job_data.get('employer_name', '')}"
 
     def accept_job(self):
         job_id = self.job_data.get('id')
@@ -426,12 +449,15 @@ class EditableJobScreen(Screen):
 
         if not user_id:
             popup = Popup(
-                title='User Error',
-                content=Label(text='User not logged in. Cannot create job.'),
+                title='User  Error',
+                content=Label(text='User  not logged in. Cannot create job.'),
                 size_hint=(0.6, 0.4)
             )
             popup.open()
             return
+
+        user_doc = db.collection('users').document(user_id).get()
+        employer_name = f"{user_doc.to_dict().get('first_name', '')} {user_doc.to_dict().get('last_name', '')}"
 
         job_data = {
             "title": title,
@@ -439,19 +465,18 @@ class EditableJobScreen(Screen):
             "time": time,
             "salary": salary,
             "phone_number": user_id,
-            "creator_id": user_id
+            "creator_id": user_id,
+            "employer_name": employer_name 
         }
 
         try:
             db.collection('jobs').add(job_data)
 
+            # Clear input fields
             self.ids.edit_title.text = ""
             self.ids.edit_location.text = ""
             self.ids.edit_time.text = ""
             self.ids.edit_salary.text = ""
-
-            EditableJobScreen.jobs_added_this_session += 1
-            print(f"Jobs Added This Session: {EditableJobScreen.jobs_added_this_session}")
 
             popup = Popup(
                 title='Job Added',

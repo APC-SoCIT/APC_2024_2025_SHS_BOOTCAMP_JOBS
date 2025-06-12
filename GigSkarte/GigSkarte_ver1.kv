@@ -37,7 +37,7 @@ ScreenManager:
     MDBoxLayout:
         orientation: "vertical"
         padding: "40dp"
-        spacing: "12dp"
+        spacing: "20dp"
 
         Image:
             source: "logo1.png"
@@ -46,28 +46,53 @@ ScreenManager:
             pos_hint: {"center_x": 0.5}
 
         MDLabel:
-            text: "Please enter your details:"
-            text_color: 0, 0, 0, 1
+            text: "[b]GigSkarte[/b]"
+            markup: True
             halign: "center"
             size_hint_y: None
             height: self.texture_size[1]
+            theme_text_color: "Primary"
+
+        MDLabel:
+            text: "Please enter your details:"
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+            theme_text_color: "Secondary"
 
         MDTextField:
             id: first_name
-            text: "First Name"
+            text: "First name"
             helper_text: "Required"
             helper_text_mode: "on_error"
             required: True
+            mode: "outlined"
+            max_text_length: 30
+            size_hint_y: None
+            height: "40dp"
 
         MDTextField:
             id: last_name
-            text: "Last Name"
-            text_color: 0, 0, 0, 1
-            fill_color: 1, 1, 1, 1
-            line_color_focus: 0, 0, 0, 1
+            text: "Last name"
             helper_text: "Required"
             helper_text_mode: "on_error"
             required: True
+            mode: "outlined"
+            max_text_length: 30
+            size_hint_y: None
+            height: "40dp"
+
+        MDTextField:
+            id: phone
+            text: "Phone number"
+            helper_text: "Required"
+            helper_text_mode: "on_error"
+            required: True
+            mode: "outlined"
+            input_filter: "int"
+            max_text_length: 15
+            size_hint_y: None
+            height: "40dp"
 
         MDTextField:
             id: password
@@ -76,35 +101,29 @@ ScreenManager:
             helper_text: "Required"
             helper_text_mode: "on_error"
             required: True
-
-        MDTextField:
-            id: phone
-            text: "+63"
-            text_color: 0, 0, 0, 1
-            fill_color: 1, 1, 1, 1
-            line_color_focus: 0, 0, 0, 1
-            helper_text: "Required"
-            helper_text_mode: "on_error"
-            required: True
+            mode: "outlined"
             input_filter: "int"
+            max_text_length: 15
+            size_hint_y: None
+            height: "40dp"
 
         MDTextField:
             id: email
-            text: "Email Address (optional)"
-            text_color: 0, 0, 0, 1
-            fill_color: 1, 1, 1, 1
-            line_color_focus: 0, 0, 0, 1
+            text: "Email address (optional)"
             helper_text_mode: "on_focus"
+            mode: "outlined"
+            size_hint_y: None
+            height: "40dp"
 
         MDLabel:
             text: "Birthdate"
-            text_color: 0, 0, 0, 1
             size_hint_y: None
             height: "20dp"
+            theme_text_color: "Primary"
 
         BoxLayout:
             size_hint_y: None
-            height: "40dp"
+            height: "48dp"
             spacing: "15dp"
 
             Spinner:
@@ -112,18 +131,31 @@ ScreenManager:
                 text: "Month"
                 values: [str(i) for i in range(1, 13)]
                 size_hint_x: 0.3
+                background_normal: ''
+                background_color: 0.87, 0.22, 0.27, 1
+                color: 1, 1, 1, 1
+                canvas.before:
 
             Spinner:
                 id: birth_day
                 text: "Day"
                 values: [str(i) for i in range(1, 32)]
                 size_hint_x: 0.3
+                background_normal: ''
+                background_color: 0.87, 0.22, 0.27, 1
+                color: 1, 1, 1, 1
+                canvas.before:
+
 
             Spinner:
                 id: birth_year
                 text: "Year"
                 values: [str(i) for i in range(1950, 2025)]
                 size_hint_x: 0.4
+                background_normal: ''
+                background_color: 0.87, 0.22, 0.27, 1
+                color: 1, 1, 1, 1
+                canvas.before:
 
         BoxLayout:
             size_hint_y: None
@@ -133,18 +165,24 @@ ScreenManager:
 
             Button:
                 text: "Sign Up"
-                background_color: 0.87, 0.22, 0.27, 1 
+                background_normal: ''
+                background_color: 0.87, 0.22, 0.27, 1
+                color: 1, 1, 1, 1
+                radius: [24,]
                 on_release: root.sign_up()
 
             Button:
-                text: "Already have an account? Log in"
+                text: "Already have an account? Login"
+                background_normal: ''
+                background_color: 0.87, 0.22, 0.27, 1
+                color: 1, 1, 1, 1
+                radius: [24,]
                 font_size: "14sp"
-                background_color: 0, 0, 0, 0
-                color: 0.87, 0.22, 0.27, 1
                 halign: "center"
                 text_size: self.width, None
                 size_hint_x: 1
                 on_release: root.login()
+
 
 <LoginScreen>:
     name: "login"
@@ -159,6 +197,9 @@ ScreenManager:
         orientation: "vertical"
         padding: "40dp"
         spacing: "20dp"
+        size_hint: None, None
+        size: self.parent.width * 0.9, self.parent.height * 0.6  # width 90%, height 60%
+        pos_hint: {"center_x": 0.5  , "center_y": 0.5}  
 
         Image:
             source: "logo1.png"
@@ -170,15 +211,21 @@ ScreenManager:
             text: "Login to your account"
             text_color: 0, 0, 0, 1
             halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+            theme_text_color: "Secondary"
+            pos_hint: {"center_x": 0.5}
 
         MDTextField:
             id: phone
             text: "+63"
             text_color: 0, 0, 0, 1
-            mode: "filled"
+            mode: "outlined"
             input_filter: "int"
             max_text_length: 15
             required: True
+            size_hint_x: 0.85
+            pos_hint: {"center_x": 0.5}
 
         MDTextField:
             id: password
@@ -187,18 +234,23 @@ ScreenManager:
             helper_text: "Required"
             helper_text_mode: "on_error"
             required: True
+            size_hint_x: 0.85
+            pos_hint: {"center_x": 0.5}
 
         BoxLayout:
             size_hint_y: None
             height: "50dp"
             spacing: "20dp"
             padding: [0, 10, 0, 0]
+            pos_hint: {"center_x": 0.5}
 
             Button:
                 text: "Log In"
+                background_normal: ''
                 background_color: 0.87, 0.22, 0.27, 1
                 color: 1, 1, 1, 1
                 on_release: root.login()
+                size_hint_x: 0.5
                 
 <SelectScreen>:
     BoxLayout:
@@ -254,6 +306,7 @@ ScreenManager:
             pos: self.pos
             size: self.size
             radius: [15]
+
 
 <InterestsScreen>:
     BoxLayout:
@@ -404,63 +457,86 @@ ScreenManager:
 <JobDetailsScreen>:
     MDBoxLayout:
         orientation: 'vertical'
-        padding: 20
-        spacing: 10
         md_bg_color: "#EEEAE2"
 
         MDBoxLayout:
+            orientation: 'vertical'
+            spacing: "12dp"
+            padding: "16dp"
+            size_hint_y: 0.9 
+
+            MDBoxLayout:
+                adaptive_height: True
+                padding: "0dp", "10dp", "0dp", "0dp"
+                MDIconButton:
+                    icon: "arrow-left"
+                    icon_color: "#000000"
+                    on_release: root.manager.current = "job_screen_1"
+
+            MDCard:
+                orientation: 'vertical'
+                background_color: "#828282"
+                background_normal:
+                padding: "20dp"
+                radius: [20, 20, 20, 20]
+                md_bg_color: 1, 1, 1, 0.97
+                spacing: "15dp"
+
+                MDLabel:
+                    id: job_employer
+                    text: "Employer: "
+                    font_size: "18sp"
+                    theme_text_color: "Custom"
+                    text_color: "#222222"
+
+                MDLabel:
+                    id: job_title
+                    text: "Job: "
+                    font_size: "16sp"
+                    theme_text_color: "Custom"
+                    text_color: "#333333"
+
+                MDLabel:
+                    id: job_location
+                    text: "Location: "
+                    font_size: "14sp"
+                    theme_text_color: "Custom"
+                    text_color: "#555555"
+
+                MDLabel:
+                    id: job_time
+                    text: "Date & Time: "
+                    font_size: "14sp"
+                    theme_text_color: "Custom"
+                    text_color: "#555555"
+
+                MDLabel:
+                    id: job_salary
+                    text: "Salary: "
+                    font_size: "14sp"
+                    theme_text_color: "Custom"
+                    text_color: "#555555"
+
+                MDLabel:
+                    id: job_number
+                    text: "Phone Number: "
+                    font_size: "14sp"
+                    theme_text_color: "Custom"
+                    text_color: "#555555"
+
+
+        MDBoxLayout:
             size_hint_y: 0.1
-
-            MDButton:
-                text: "<"
-                md_bg_color: "#DD3846"
-                text_color: "white"
-                on_release:
-                    root.manager.current = "job_screen_1"
-
-        MDLabel:
-            id: job_title
-            text: "Job: "
-            theme_text_color: "Custom"
-            text_color: "#DD3846"
-            halign: "center"
-
-        MDLabel:
-            id: job_location
-            text: "Location: "
-            theme_text_color: "Custom"
-            text_color: "#DD3846"
-            halign: "center"
-
-        MDLabel:
-            id: job_time
-            text: "Date & Time: "
-            theme_text_color: "Custom"
-            text_color: "#DD3846"
-            halign: "center"
-
-        MDLabel:
-            id: job_salary
-            text: "Salary: "
-            theme_text_color: "Custom"
-            text_color: "#DD3846"
-            halign: "center"
-
-        MDLabel:
-            id: job_number
-            text: "+63"
-            theme_text_color: "Custom"
-            text_color: "#DD3846"
-            halign: "center"
-
-        MDButton:
-            text: "Accept job offer"
-            md_bg_color: "#DD3846"
-            text_color: "white"
-            size_hint_y: 0.2
-            halign: "center"
-            on_release:
-                root.accept_job()
+            padding: "16dp"
+            Button:
+                text: "Accept job offer"
+                background_normal: ''
+                background_color: "#DD3846"
+                text_color: "#FFFFFF"
+                font_size: "16sp"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 1
+                on_release: root.accept_job()
 
 <JobScreen2>:
     MDBoxLayout:
@@ -608,22 +684,24 @@ ScreenManager:
 
 <JobBox>:
     orientation: 'vertical'
-    padding: 10
-    spacing: 10
+    padding: 16
+    spacing: 12
     size_hint_y: None
-    height: 180
+    height: dp(250) 
     canvas.before:
         Color:
-            rgba: 238, 234, 226, 1
+            rgba: 238 / 255, 234 / 255, 226 / 255, 1
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [10]
+            radius: [12]
     GridLayout:
         cols: 2
-        spacing: 5
+        spacing: dp(12)
         size_hint_y: None
-        height: 160
+        height: self.minimum_height
+        row_default_height: '28dp'
+        row_force_default: True
 
         MDLabel:
             text: "[b]Job Title:[/b]"
@@ -631,11 +709,15 @@ ScreenManager:
             halign: "left"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
         MDLabel:
             text: root.job_title
             halign: "right"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
 
         MDLabel:
             text: "[b]Location:[/b]"
@@ -643,11 +725,15 @@ ScreenManager:
             halign: "left"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
         MDLabel:
             text: root.location
             halign: "right"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
 
         MDLabel:
             text: "[b]Salary:[/b]"
@@ -655,11 +741,15 @@ ScreenManager:
             halign: "left"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
         MDLabel:
             text: root.salary
             halign: "right"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
 
         MDLabel:
             text: "[b]Date & Time:[/b]"
@@ -667,21 +757,24 @@ ScreenManager:
             halign: "left"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
         MDLabel:
             text: root.date_time
             halign: "right"
             valign: "middle"
             text_size: self.size
+            shorten: True
+            max_lines: 1
 
         MDLabel:
-            text: "[b]Status:[/b]" + root.status
+            text: "[b]Status:[/b]"
             markup: True
-            halign: "right"
+            halign: "left"
             valign: "middle"
             text_size: self.size
-        
         MDLabel:
-            text: ""
+            text: root.status
             halign: "right"
             valign: "middle"
             text_size: self.size
@@ -689,10 +782,9 @@ ScreenManager:
         MDLabel:
             text: "[b]+63[/b]"
             markup: True
-            halign: "right"
+            halign: "left"
             valign: "middle"
             text_size: self.size
-        
         MDLabel:
             text: root.job_number
             halign: "right"
@@ -718,13 +810,9 @@ ScreenManager:
             height: 50
             padding: 5
             spacing: 5
-            MDButton:
-                text: "<"
-                font_size: 24
-                background_color: 1, 1, 1, 1
-                color: 1, 0, 0, 1
-                size_hint_x: None
-                width: 50
+            MDIconButton:
+                icon: "arrow-left"
+                icon_color: "#000000"
                 on_press: root.go_back()
 
         MDLabel:
@@ -758,20 +846,16 @@ ScreenManager:
                 rgba: 0.96, 0.93, 0.89, 1
             RoundedRectangle:
                 pos: self.pos
-                size: self.size
+                size: self.size 
 
         MDBoxLayout:
             size_hint_y: None
             height: 50
             padding: 5
             spacing: 5
-            Button:
-                text: "<"
-                font_size: 24
-                background_color: 1, 1, 1, 1
-                color: 1, 0, 0, 1
-                size_hint_x: None
-                width: 50
+            MDIconButton:
+                icon: "arrow-left"
+                icon_color: "#000000"
                 on_press: root.go_back()
 
         MDLabel:
