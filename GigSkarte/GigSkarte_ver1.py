@@ -94,19 +94,14 @@ class LoginScreen(Screen):
     def login(self):
         phone = self.ids.phone.text.strip()
         password = self.ids.password.text.strip()
-        birth_month = self.ids.birth_month.text
-        birth_day = self.ids.birth_day.text
-        birth_year = self.ids.birth_year.text
         
-        if not phone or birth_month == "Month" or birth_day == "Day" or birth_year == "Year" or password == "Password": 
+        if not phone or password == "Password": 
             print("Please fill all required fields!")
             return
         
-        birthdate = f"{birth_year}-{birth_month.zfill(2)}-{birth_day.zfill(2)}"
         
         print("Logged In:")
         print(f"Phone: {phone}")
-        print(f"Birthdate: {birthdate}")
         print(f"Password: {password}")
         
         self.manager.current = "select"
@@ -116,7 +111,7 @@ class LoginScreen(Screen):
             user_doc = db.collection('users').document(phone).get()
             if user_doc.exists:
                 user_data = user_doc.to_dict()
-                if user_data.get('birthdate') == birthdate and user_data.get('password') == password:
+                if user_data.get('password') == password:
                     print("User logged in successfully!")
 
                     app = MDApp.get_running_app()
@@ -571,6 +566,7 @@ class PendingJobsScreen(Screen):
         self.manager.current = "job_screen_1"
     
 # Accepted Job Screen (Employer)
+
 class AcceptedJobsScreen(Screen):
     def on_enter(self):
 

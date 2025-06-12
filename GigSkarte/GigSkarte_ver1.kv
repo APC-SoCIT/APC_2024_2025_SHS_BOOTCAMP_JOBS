@@ -195,35 +195,6 @@ ScreenManager:
             helper_text_mode: "on_error"
             required: True
 
-        MDLabel:
-            text: "Birthdate"
-            text_color: 0, 0, 0, 1
-            size_hint_y: None
-            height: "20dp"
-
-        BoxLayout:
-            size_hint_y: None
-            height: "40dp"
-            spacing: "15dp"
-
-            Spinner:
-                id: birth_month
-                text: "Month"
-                values: [str(i) for i in range(1, 13)]
-                size_hint_x: 0.3
-
-            Spinner:
-                id: birth_day
-                text: "Day"
-                values: [str(i) for i in range(1, 32)]
-                size_hint_x: 0.3
-
-            Spinner:
-                id: birth_year
-                text: "Year"
-                values: [str(i) for i in range(1950, 2025)]
-                size_hint_x: 0.4
-
         BoxLayout:
             size_hint_y: None
             height: "50dp"
@@ -440,8 +411,8 @@ ScreenManager:
 <JobDetailsScreen>:
     MDBoxLayout:
         orientation: 'vertical'
-        padding: 20dp
-        spacing: 10dp
+        padding: 20
+        spacing: 10
         md_bg_color: "#EEEAE2"
 
         MDBoxLayout:
