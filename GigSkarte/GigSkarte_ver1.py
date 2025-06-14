@@ -17,6 +17,8 @@ from kivy.properties import StringProperty
 from datetime import datetime
 from kivy.metrics import dp, sp
 from kivy.core.text import Label as CoreLabel
+from kivy.uix.image import Image
+from kivy.uix.behaviors import ButtonBehavior
 
 from kivymd.font_definitions import theme_font_styles
 from kivy.core.window import Window
@@ -519,6 +521,10 @@ class JobBox(BoxLayout):
             )
             popup.open()
 
+            feedback_screen = app.root.get_screen('rating_screen')
+            feedback_screen.job_id = self.job_id  
+            app.root.current = 'rating_screen'
+
             pending_screen = app.root.get_screen('pending_jobs')
             pending_screen.load_pending_jobs()
         except Exception as e:
@@ -530,19 +536,11 @@ class JobBox(BoxLayout):
             popup.open()
 
 class PendingJobsScreen(Screen):
-    def delete_job(self, job_id):
-        try:
-            db.collection('jobs').document(job_id).delete()
-            print(f"Job {job_id} deleted successfully!")
-            self.load_jobs()  
-        except Exception as e:
-            print(f"Failed to delete job: {e}")
-
-    def on_kv_post(self, base_widget):
-        self.load_pending_jobs()
-        
     def on_enter(self):
         self.load_pending_jobs()
+
+    def clear_jobs(self):
+        self.ids.job_list.clear_widgets()
 
     def load_pending_jobs(self):
         self.clear_jobs()
@@ -551,26 +549,28 @@ class PendingJobsScreen(Screen):
         if not user_id:
             print("No current user found for loading pending jobs.")
             return
-        
+
         try:
-            jobs_ref = db.collection('jobs')    
+            jobs_ref = db.collection('jobs')
             query = jobs_ref.where('status', '==', 'accepted').where('accepted_by', '==', user_id)
             docs = query.stream()
+
             any_jobs = False
             for doc in docs:
                 job_data = doc.to_dict()
                 job_data['id'] = doc.id
-                job_data['status'] = "Ongoing" 
+                job_data['status'] = "Ongoing"
                 self.add_job(job_data)
                 any_jobs = True
-            
+                print(f"Found job: {job_data}")
+
             if not any_jobs:
                 print("No pending jobs found.")
         except Exception as e:
             print(f"Error loading pending jobs: {e}")
 
     def add_job(self, job_data):
-        print(f"Adding job to UI: {job_data}") 
+        print(f"Adding job to UI: {job_data}")
         job_box = JobBox(
             job_title=job_data.get("title", "No title"),
             location=job_data.get("location", "No location"),
@@ -580,13 +580,20 @@ class PendingJobsScreen(Screen):
             status=job_data.get("status", "Ongoing"),
             job_id=job_data.get('id', "")
         )
+
+        job_box.size_hint_y = None
+        job_box.height = dp(120)
+
+        complete_button = Button(
+            text="Complete",
+            size_hint=(None, None),
+            size=(dp(100), dp(40)),
+            pos_hint={"center_x": 0.5}
+        )
+        complete_button.bind(on_release=lambda x: job_box.complete_job())
+        job_box.add_widget(complete_button)
+
         self.ids.job_list.add_widget(job_box)
-
-    def clear_jobs(self):
-        self.ids.job_list.clear_widgets()
-
-    def go_back(self):
-        self.manager.current = "job_screen_1"
     
 # Accepted Job Screen (Employer)
 
@@ -596,7 +603,6 @@ class AcceptedJobsScreen(Screen):
         self.load_accepted_jobs()
 
     def clear_jobs(self):
-
         self.ids.job_list.clear_widgets()
 
     def add_job(self, job_data):
@@ -689,6 +695,42 @@ class AcceptedJobsScreen(Screen):
 
     def go_back(self):
         self.manager.current = "job_screen"
+
+# --- Feedback ---
+class StarButton(ButtonBehavior, Image):
+    def __init__(self, index, callback, **kwargs):
+        super().__init__(**kwargs)
+        self.index = index
+        self.callback = callback
+        self.source = 'star_outline.jpg'
+
+    def on_press(self):
+        self.callback(self.index)
+
+class RatingScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.stars = []
+        self.rating = 0
+
+    def on_kv_post(self, base_widget):
+        for i in range(5):
+            star = StarButton(index=i + 1, callback=self.set_rating)
+            self.stars.append(star)
+            self.ids.star_layout.add_widget(star)
+
+    def set_rating(self, rating):
+        self.rating = rating
+        for i, star in enumerate(self.stars):
+            star.source = 'star_filled.jpg' if i < rating else 'star_outline.jpg'
+
+    def submit(self):
+        popup = Popup(
+            title="Thank You!",
+            content=Label(text=f"You rated {self.rating} star(s)\nFeedback: {self.ids.feedback_input.text}"),
+            size_hint=(0.7, 0.4),
+        )
+        popup.open()
 
 class CombinedApp(MDApp):
     current_user = None

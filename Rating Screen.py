@@ -18,7 +18,7 @@ class StarButton(ButtonBehavior, Image):
         super().__init__(**kwargs)
         self.index = index
         self.callback = callback
-        self.source = 'star_outline.png'
+        self.source = 'star_outline.jpg'
 
     def on_press(self):
         self.callback(self.index)
@@ -103,7 +103,7 @@ class RatingScreen(BoxLayout):
     def set_rating(self, rating):
         self.rating = rating
         for i, star in enumerate(self.stars):
-            star.source = 'star_filled.png' if i < rating else 'star_outline.png'
+            star.source = 'star_filled.jpg' if i < rating else 'star_outline.jpg'
 
     def submit(self, instance):
         popup = Popup(

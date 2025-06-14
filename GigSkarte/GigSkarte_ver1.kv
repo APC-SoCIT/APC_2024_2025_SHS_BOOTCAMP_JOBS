@@ -24,6 +24,8 @@ ScreenManager:
         name: "pending_jobs"
     AcceptedJobsScreen:
         name: "accepted_jobs"
+    RatingScreen:
+        name: "rating_screen"
 
 <SignUpScreen>:
     name: "signup"
@@ -528,7 +530,6 @@ ScreenManager:
                     theme_text_color: "Custom"
                     text_color: "#555555"
 
-
         MDBoxLayout:
             size_hint_y: 0.1
             padding: "16dp"
@@ -798,6 +799,7 @@ ScreenManager:
 
 <PendingJobsScreen>:
     name: "pending_jobs"
+    on_enter: root.on_enter()
     MDBoxLayout:
         orientation: 'vertical'
         padding: 10
@@ -831,8 +833,9 @@ ScreenManager:
             text_size: self.size
 
         ScrollView:
-            BoxLayout:
+            MDBoxLayout:
                 id: job_list
+                adaptive_height: True
                 orientation: 'vertical'
                 spacing: 15
                 padding: 10
@@ -881,3 +884,65 @@ ScreenManager:
                 padding: 10
                 size_hint_y: None
                 height: self.minimum_height
+
+<RatingScreen>:
+    name: "rating_screen"
+    orientation: 'vertical'
+    spacing: 20
+    padding: 20
+    canvas.before:
+        Color:
+            rgba: 0.93, 0.92, 0.89, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, 0.1
+        padding: 10
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: 0.87, 0.22, 0.27, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Button:
+            text: "<"
+            size_hint_x: None
+            width: 50
+            background_color: 0.87, 0.22, 0.27, 1
+            color: 1, 1, 1, 1
+            font_size: 20
+
+        Label:
+
+    Label:
+        text: "Rate Your Experience"
+        font_size: 30
+        color: 0, 0, 0, 1
+        size_hint: 1, 0.1
+
+    BoxLayout:
+        id: star_layout
+        orientation: 'horizontal'
+        spacing: 10
+        size_hint: 1, 0.2
+
+    TextInput:
+        id: feedback_input
+        hint_text: "Leave feedback..."
+        size_hint: 1, 0.3
+        background_color: 0.8, 0.8, 0.8, 1
+        foreground_color: 0, 0, 0, 1
+        padding: 10
+
+    Button:
+        text: "Submit"
+        size_hint: 1, 0.15
+        background_color: 0.87, 0.22, 0.27, 1
+        color: 1, 1, 1, 1
+        font_size: 20
+        on_press: root.submit()
